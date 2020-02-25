@@ -6,7 +6,7 @@
       "Dash",
       "Plotly"
     ],
-    "repository": "git@github.com:renenadorp/dash_on_flask.git",
+    "repository": "git@github.com:renenadorp/medium-ml.git",
     "success_url": "/",
     "env": {
       "SECRET_KEY": {

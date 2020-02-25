@@ -1,8 +1,103 @@
+
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc 
+import dash_table as dtb
 
-layout = html.Div([
-    html.H1('Stock Tickers'),
+class Card(object):
+
+    def __init__(self,header, title, text, body):
+
+        self.html= html.Div([html.Div(
+        [
+            html.H5(header, className="card-header bg-secondary text-light"),
+            html.Div([
+                html.H5(title, className="card-title"),
+                html.P(body,className="card-text"),
+            ],
+            className="card-body"
+            )
+        ],className="card border-dark "),
+        html.P()])
+
+
+### GLOBAL VARS & CONSTANTS ######################################
+PAGE_SIZE = 10
+content=[]
+### NAVBAR ################################################
+
+page_nav = dbc.NavbarSimple(
+    children=[
+        # dbc.NavItem(dbc.NavLink("Stories", href="#")),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem("Story 1", header=True),
+                dbc.DropdownMenuItem("Story 2", href="#"),
+                dbc.DropdownMenuItem("Story 3", href="#"),
+            ],
+            nav=True,
+            in_navbar=True,
+            label="Stories",
+        ),
+    ],
+    brand="My Data Science Journey",
+    brand_href="#",
+    color="secondary",
+    dark=True,
+)
+
+### TITLE ################################################
+
+page_title = html.H1('Story 1 - Regression Analysis')
+
+### INTRODUCTION ###########################################
+content.append( Card(header="Introduction", title="", text="Text", body=html.Div([
+    html.P('''
+        This page is part of the series "My Data Science Journey", published as stories on Medium:
+        - Story 1 (this one): Regression Analysis
+        - Story 2: TBD
+
+        '''
+        ),  
+])))
+
+### BUSINESS UNDERSTANDING ###########################################
+content.append(Card(header="Business Understanding", title="", text="Text", 
+    body=html.Div([
+    html.P('''
+        The purpose of this notebook is to predict resident house prices based on a number of attributes 
+        (e.g. location, number of rooms, year of construction) using Linear Regression.
+        '''
+        )
+])))
+
+### DATA UNDERSTANDING ###########################################
+content.append(Card(header="Data Understanding", title= "DU", text="Text", body=html.Div([
+    html.P(''' 
+    The data used for this notebook is taken from the GitHub repository of Rui Chang, 
+    and can be found here: https://raw.githubusercontent.com/RuiChang123/Regression_for_house_price_estimation/master/final_data.csv 
+    The article on Medium by Rui Chang using this dataset (also applying linear regression) can be found here: https://towardsdatascience.com/linear-regression-in-python-predict-the-bay-areas-home-price-5c91c8378878
+    ''')
+])))
+
+### DATA MODELING ###########################################
+content.append(Card(header="Modeling", title= "", text="Text", body=html.Div([
+    html.H2('Data Modeling')
+])))
+
+### EVALUATION ###########################################
+content.append(Card(header="Evaluation", 
+    title= "", 
+    text="Text", 
+    body=html.Div([
+    html.H2('Evaluation')
+])))
+
+### GRAPH ###########################################
+content.append(Card(header="Graph", 
+    title= "", 
+    text="Text", 
+    body=html.Div([    
     dcc.Dropdown(
         id='my-dropdown',
         options=[
@@ -12,5 +107,25 @@ layout = html.Div([
         ],
         value='COKE'
     ),
-    dcc.Graph(id='my-graph')
-], style={'width': '500'})
+    html.Div([
+        dcc.Graph(id='my-graph-2'),
+        html.Div([
+            dtb.DataTable(
+                    id='datatable',
+                    page_current=0,
+                    page_size=PAGE_SIZE,
+                    page_action='custom',
+                    sort_action='custom',
+                    sort_mode='single',
+                    sort_by=[]
+                )
+        ])
+    ])
+    ])))
+
+page_footer = html.Div('Footer')
+
+page = [page_nav] + [page_title] + [ i.html for i in content ] + [page_footer]
+
+layout = html.Div(page, className="container")
+

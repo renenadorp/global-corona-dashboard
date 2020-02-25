@@ -1,9 +1,22 @@
+
 import dash
 from flask import Flask
 from flask.helpers import get_root_path
 from flask_login import login_required
 
 from config import BaseConfig
+import os
+import copy
+import datetime as dt
+
+import pandas as pd
+import dash
+from dash.dependencies import Input, Output, State
+
+import dash_bootstrap_components as dbc 
+import dash_table
+
+import plotly.express as px
 
 
 def create_app():
@@ -28,10 +41,11 @@ def register_dashapps(app):
                          server=app,
                          url_base_pathname='/dashboard/',
                          assets_folder=get_root_path(__name__) + '/dashboard/assets/',
-                         meta_tags=[meta_viewport])
+                         meta_tags=[meta_viewport],
+                         external_stylesheets=[dbc.themes.BOOTSTRAP])
 
     with app.app_context():
-        dashapp1.title = 'Dashapp 1'
+        dashapp1.title = 'Medium Data Science Journey - Story 1'
         dashapp1.layout = layout
         register_callbacks(dashapp1)
 
