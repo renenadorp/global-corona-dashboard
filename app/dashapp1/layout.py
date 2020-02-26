@@ -10,20 +10,20 @@ class Card(object):
 
         self.html= html.Div([html.Div(
         [
-            html.H5(header, className="card-header bg-secondary text-light"),
+            html.H5(header, className="card-header "),
             html.Div([
                 html.H5(title, className="card-title"),
                 html.P(body,className="card-text"),
             ],
             className="card-body"
             )
-        ],className="card border-dark "),
+        ],className="card "),
         html.P()])
 
 
 ### GLOBAL VARS & CONSTANTS ######################################
 PAGE_SIZE = 10
-content=[]
+cards=[]
 ### NAVBAR ################################################
 
 page_nav = dbc.NavbarSimple(
@@ -51,7 +51,7 @@ page_nav = dbc.NavbarSimple(
 page_title = html.H1('Story 1 - Regression Analysis')
 
 ### INTRODUCTION ###########################################
-content.append( Card(header="Introduction", title="", text="Text", body=html.Div([
+cards.append( Card(header="Introduction", title="", text="Text", body=html.Div([
     html.P('''
         This page is part of the series "My Data Science Journey", published as stories on Medium:
         - Story 1 (this one): Regression Analysis
@@ -62,7 +62,7 @@ content.append( Card(header="Introduction", title="", text="Text", body=html.Div
 ])))
 
 ### BUSINESS UNDERSTANDING ###########################################
-content.append(Card(header="Business Understanding", title="", text="Text", 
+cards.append(Card(header="Business Understanding", title="", text="Text", 
     body=html.Div([
     html.P('''
         The purpose of this notebook is to predict resident house prices based on a number of attributes 
@@ -72,32 +72,36 @@ content.append(Card(header="Business Understanding", title="", text="Text",
 ])))
 
 ### DATA UNDERSTANDING ###########################################
-content.append(Card(header="Data Understanding", title= "DU", text="Text", body=html.Div([
-    html.P(''' 
+body = html.Div([
+    html.H2('Dataset'),
+    dcc.Markdown(
+    '''
     The data used for this notebook is taken from the GitHub repository of Rui Chang, 
-    and can be found here: https://raw.githubusercontent.com/RuiChang123/Regression_for_house_price_estimation/master/final_data.csv 
-    The article on Medium by Rui Chang using this dataset (also applying linear regression) can be found here: https://towardsdatascience.com/linear-regression-in-python-predict-the-bay-areas-home-price-5c91c8378878
-    ''')
-])))
+    and can be found [here](https://raw.githubusercontent.com/RuiChang123/Regression_for_house_price_estimation/master/final_data.csv).
+    The article on Medium by Rui Chang using this dataset (also applying linear regression) can be found [here](https://towardsdatascience.com/linear-regression-in-python-predict-the-bay-areas-home-price-5c91c8378878)
 
-### DATA MODELING ###########################################
-content.append(Card(header="Modeling", title= "", text="Text", body=html.Div([
-    html.H2('Data Modeling')
-])))
-
-### EVALUATION ###########################################
-content.append(Card(header="Evaluation", 
-    title= "", 
-    text="Text", 
-    body=html.Div([
-    html.H2('Evaluation')
-])))
-
-### GRAPH ###########################################
-content.append(Card(header="Graph", 
-    title= "", 
-    text="Text", 
-    body=html.Div([    
+    The dataset contains the following information about houses sold in San Francisco:
+    * address
+    * info
+    * z_address
+    * bathrooms
+    * bedrooms
+    * finishedsqft
+    * lastsolddate
+    * lastsoldprice
+    * latitude
+    * longitude
+    * neighborhood
+    * totalrooms
+    * usecode
+    * yearbuilt
+    * zestimate
+    * zindexvalue
+    * zipcode
+    * zpid
+    '''),
+    html.H2('Graph'),
+    html.Div([    
     dcc.Dropdown(
         id='my-dropdown',
         options=[
@@ -109,7 +113,12 @@ content.append(Card(header="Graph",
     ),
     html.Div([
         dcc.Graph(id='my-graph-2'),
-        html.Div([
+        
+    ])
+    ]),
+    html.H2('Table'),
+
+    html.Div([
             dtb.DataTable(
                     id='datatable',
                     page_current=0,
@@ -120,12 +129,30 @@ content.append(Card(header="Graph",
                     sort_by=[]
                 )
         ])
-    ])
-    ])))
+])
+cards.append(Card(header="Data Understanding", 
+    title= "",    
+    text="Text", 
+    body=body))
+
+### DATA MODELING ###########################################
+cards.append(Card(header="Modeling", title= "", text="Text", body=html.Div([
+    html.H2('Data Modeling')
+])))
+
+### EVALUATION ###########################################
+cards.append(Card(header="Evaluation", 
+    title= "", 
+    text="Text", 
+    body=html.Div([
+    html.H2('Evaluation')
+])))
+
+
 
 page_footer = html.Div('Footer')
 
-page = [page_nav] + [page_title] + [ i.html for i in content ] + [page_footer]
+page = [page_nav] + [page_title] + [ card.html for card in cards ] + [page_footer]
 
 layout = html.Div(page, className="container")
 
