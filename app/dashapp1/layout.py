@@ -18,7 +18,9 @@ class Card(object):
             className="card-body"
             )
         ],className="card "),
-        html.P()])
+        html.P()
+        ])
+        
 
 
 ### GLOBAL VARS & CONSTANTS ######################################
@@ -26,7 +28,7 @@ PAGE_SIZE = 10
 cards=[]
 ### NAVBAR ################################################
 
-page_nav = dbc.NavbarSimple(
+nav = dbc.NavbarSimple(
     children=[
         # dbc.NavItem(dbc.NavLink("Stories", href="#")),
         dbc.DropdownMenu(
@@ -40,22 +42,24 @@ page_nav = dbc.NavbarSimple(
             label="Stories",
         ),
     ],
-    brand="My Data Science Journey",
+    brand="My Machine Learning Journey",
     brand_href="#",
-    color="secondary",
-    dark=True,
+    color="light",
+    dark=False,
 )
-
-### TITLE ################################################
-
-page_title = html.H1('Story 1 - Regression Analysis')
+cards.append( Card(header=nav, 
+    title= "",    
+    text="Text", 
+    body=dcc.Markdown('''
+    This page is part of the series "My Machine Learning Journey", published as stories on Medium:
+    * Story 1 (this one): Regression Analysis
+    * Story 2: TBD
+    ''')))
 
 ### INTRODUCTION ###########################################
-cards.append( Card(header="Introduction", title="", text="Text", body=html.Div([
+cards.append( Card(header="Story 1 - Regression Analysis", title="", text="Text", body=html.Div([
     html.P('''
-        This page is part of the series "My Data Science Journey", published as stories on Medium:
-        - Story 1 (this one): Regression Analysis
-        - Story 2: TBD
+        Story specific introduction
 
         '''
         ),  
@@ -73,7 +77,7 @@ cards.append(Card(header="Business Understanding", title="", text="Text",
 
 ### DATA UNDERSTANDING ###########################################
 body = html.Div([
-    html.H2('Dataset'),
+    html.H3('Dataset'),
     dcc.Markdown(
     '''
     The data used for this notebook is taken from the GitHub repository of Rui Chang, 
@@ -100,13 +104,14 @@ body = html.Div([
     * zipcode
     * zpid
     '''),
-    html.H2('Graph'),
+    html.H3('Graph'),
     html.Div([    
     dcc.Dropdown(
         id='my-dropdown',
         options=[
             {'label': 'Coke', 'value': 'COKE'},
             {'label': 'Tesla', 'value': 'TSLA'},
+            {'label': 'Randstad', 'value': 'RAND.AS'},
             {'label': 'Apple', 'value': 'AAPL'}
         ],
         value='COKE'
@@ -116,7 +121,7 @@ body = html.Div([
         
     ])
     ]),
-    html.H2('Table'),
+    html.H3('Table'),
 
     html.Div([
             dtb.DataTable(
@@ -135,9 +140,14 @@ cards.append(Card(header="Data Understanding",
     text="Text", 
     body=body))
 
+### DATA PREPARATION ###########################################
+cards.append(Card(header="Data Preparation", title= "", text="Text", body=html.Div([
+    html.H2('Data Preparation')
+])))
+
 ### DATA MODELING ###########################################
 cards.append(Card(header="Modeling", title= "", text="Text", body=html.Div([
-    html.H2('Data Modeling')
+    html.H2(' Modeling')
 ])))
 
 ### EVALUATION ###########################################
@@ -149,10 +159,27 @@ cards.append(Card(header="Evaluation",
 ])))
 
 
+### DEPLOYMENT ###########################################
+cards.append(Card(header="Deployment", 
+    title= "", 
+    text="Text", 
+    body=html.Div([
+    html.H2('Deployment')
+])))
 
-page_footer = html.Div('Footer')
 
-page = [page_nav] + [page_title] + [ card.html for card in cards ] + [page_footer]
+
+### CONCLUSION ###########################################
+cards.append(Card(header="Conclusion", 
+    title= "", 
+    text="Text", 
+    body=html.Div([
+    html.H2('Conclustion')
+])))
+
+
+
+page = [ card.html for card in cards ] 
 
 layout = html.Div(page, className="container")
 
