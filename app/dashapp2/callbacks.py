@@ -3,7 +3,7 @@ from datetime import datetime as dt
 import pandas_datareader as pdr
 from dash.dependencies import Input
 from dash.dependencies import Output
-from app.dashapp1.data.data  import Data
+from app.dashapp2.data.data  import Data
 import dash_table as dtb
 
 
@@ -17,11 +17,10 @@ def register_callbacks(dashapp):
 
         return {
             'data': [{
-                'x': df.lastsolddate,
-                'y': df.lastsoldprice,
-                'type':'bar'
+                'x': df.index,
+                'y': df.Close
             }],
-            'layout': {'margin': {'l': 0, 'r': 100, 't': 0, 'b': 100}}
+            'layout': {'margin': {'l': 40, 'r': 0, 't': 20, 'b': 30}}
         }
 
     @dashapp.callback(
