@@ -14,6 +14,8 @@ from app.forms import LoginForm
 from app.forms import RegistrationForm
 from app.models import User
 
+
+
 server_bp = Blueprint('main', __name__)
 
 

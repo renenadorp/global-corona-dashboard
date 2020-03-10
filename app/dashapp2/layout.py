@@ -8,20 +8,22 @@ from app.classes import Intro, Nav, Card
 
 
 ### GLOBAL VARS & CONSTANTS ######################################
-PAGE_SIZE = 100
+PAGE_SIZE = 10
 cards=[]
 ### NAVBAR ################################################
 
 nav = Nav().html
+
 cards.append( Card(header=nav, 
     title= "",    
     text="Text", 
     body=Intro().html))
 
 ### INTRODUCTION ###########################################
-cards.append( Card(header="Story 1 - Regression Analysis", title="", text="Text", body=html.Div([
+cards.append( Card(header="Story 2 - **********", title="", text="Text", body=html.Div([
     html.P('''
-          This story covers Linear Regression.
+        The purpose of this model is to predict resident house prices based on a number of attributes 
+        (e.g. location, number of rooms, year of construction) using Linear Regression.
           '''
         ),  
 ])))
@@ -30,7 +32,7 @@ cards.append( Card(header="Story 1 - Regression Analysis", title="", text="Text"
 cards.append(Card(header="Business Understanding", title="", text="Text", 
     body=html.Div([
     html.P('''
-        The purpose of the model is to predict resident house prices based on a number of attributes 
+        The purpose of this model is to predict resident house prices based on a number of attributes 
         (e.g. location, number of rooms, year of construction) using Linear Regression.
         '''
         )
@@ -112,7 +114,7 @@ cards.append(Card(header="Modeling", title= "", text="Text", body=html.Div([
 ])))
 
 ### EVALUATION ###########################################
-cards.append(Card(header="Evaluation", 
+cards.append(Card(header="Exaluation", 
     title= "", 
     text="Text", 
     body=html.Div([
@@ -142,5 +144,5 @@ cards.append(Card(header="Conclusion",
 
 page = [ card.html for card in cards ] 
 
-layout = html.Div(page, className="container-fluid p-3")
+layout = html.Div(page, className="container")
 
