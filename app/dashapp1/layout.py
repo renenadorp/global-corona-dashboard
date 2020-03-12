@@ -6,20 +6,18 @@ import dash_table as dtb
 from app.classes import Intro, Nav, Card
 
 
-
 ### GLOBAL VARS & CONSTANTS ######################################
-PAGE_SIZE = 100
+PAGE_SIZE = 20
 cards=[]
-### NAVBAR ################################################
 
+### NAVBAR ################################################
 nav = Nav().html
-cards.append( Card(header=nav, 
-    title= "",    
-    text="Text", 
-    body=Intro().html))
 
 ### INTRODUCTION ###########################################
-cards.append( Card(header="Story 1 - Regression Analysis", title="", text="Text", body=html.Div([
+intro = Intro().html
+
+### STORY INTRODUCTION ###########################################
+cards.append( Card(header="Story Introduction", title="", text="Linear Regression", body=html.Div([
     html.P('''
           This story covers Linear Regression.
           '''
@@ -82,11 +80,24 @@ body = html.Div([
         
     ])
     ]),
-    html.H3('Table'),
+    html.H3('Raw Data'),
 
     html.Div([
             dtb.DataTable(
-                    id='datatable',
+                    id='table-raw',
+                    page_current=0,
+                    page_size=PAGE_SIZE,
+                    page_action='custom',
+                    sort_action='custom',
+                    sort_mode='single',
+                    sort_by=[]
+                )
+        ]),
+    html.H3('Statistics'),
+
+    html.Div([
+            dtb.DataTable(
+                    id='table-stats',
                     page_current=0,
                     page_size=PAGE_SIZE,
                     page_action='custom',
@@ -106,7 +117,7 @@ cards.append(Card(header="Data Preparation", title= "", text="Text", body=html.D
     html.H2('Data Preparation')
 ])))
 
-### DATA MODELING ###########################################
+### MODELING ###########################################
 cards.append(Card(header="Modeling", title= "", text="Text", body=html.Div([
     html.H2(' Modeling')
 ])))
@@ -129,7 +140,6 @@ cards.append(Card(header="Deployment",
 ])))
 
 
-
 ### CONCLUSION ###########################################
 cards.append(Card(header="Conclusion", 
     title= "", 
@@ -140,7 +150,7 @@ cards.append(Card(header="Conclusion",
 
 
 
-page = [ card.html for card in cards ] 
+page = [nav]+[intro]+[ card.html for card in cards ] 
 
-layout = html.Div(page, className="container-fluid p-3")
+layout = html.Div(page, className="container-fluid")
 

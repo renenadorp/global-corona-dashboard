@@ -6,21 +6,18 @@ import dash_table as dtb
 from app.classes import Intro, Nav, Card
 
 
-
 ### GLOBAL VARS & CONSTANTS ######################################
-PAGE_SIZE = 10
+PAGE_SIZE = 20
 cards=[]
-### NAVBAR ################################################
 
+### NAVBAR ################################################
 nav = Nav().html
 
-cards.append( Card(header=nav, 
-    title= "",    
-    text="Text", 
-    body=Intro().html))
+### INTRODUCTION ###########################################
+intro = Intro().html
 
 ### INTRODUCTION ###########################################
-cards.append( Card(header="Story 2 - **********", title="", text="Text", body=html.Div([
+cards.append( Card(header="Story Introduction", title="", text="Text", body=html.Div([
     html.P('''
         The purpose of this model is to predict resident house prices based on a number of attributes 
         (e.g. location, number of rooms, year of construction) using Linear Regression.
@@ -114,7 +111,7 @@ cards.append(Card(header="Modeling", title= "", text="Text", body=html.Div([
 ])))
 
 ### EVALUATION ###########################################
-cards.append(Card(header="Exaluation", 
+cards.append(Card(header="Evaluation", 
     title= "", 
     text="Text", 
     body=html.Div([
@@ -142,7 +139,7 @@ cards.append(Card(header="Conclusion",
 
 
 
-page = [ card.html for card in cards ] 
+page = [nav] + [intro] +[ card.html for card in cards ] 
 
-layout = html.Div(page, className="container")
+layout = html.Div(page, className="container-fluid")
 

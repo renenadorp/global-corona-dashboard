@@ -13,7 +13,7 @@ def register_callbacks(dashapp):
     @dashapp.callback(Output('my-graph-2', 'figure'), [Input('my-dropdown', 'value')])
     def update_graph_2(selected_dropdown_value):
         d = Data()
-        df = d.get_data(selected_dropdown_value)
+        df = d.get_raw(selected_dropdown_value)
 
         return {
             'data': [{
@@ -26,19 +26,19 @@ def register_callbacks(dashapp):
 
     @dashapp.callback(
         [
-            Output('datatable', 'columns'),
-            Output('datatable', 'data')
+            Output('table-raw', 'columns'),
+            Output('table-raw', 'data')
         ],
         [
-            Input('datatable', "page_current"),
-            Input('datatable', "page_size"),
-            Input('datatable', 'sort_by'),
+            Input('table-raw', "page_current"),
+            Input('table-raw', "page_size"),
+            Input('table-raw', 'sort_by'),
             Input('my-dropdown', 'value')
          ])
 
-    def update_table(page_current, page_size, sort_by, selected_dropdown_value):
+    def update_raw(page_current, page_size, sort_by, selected_dropdown_value):
         d = Data()
-        df = d.get_data(selected_dropdown_value)
+        df = d.get_raw(selected_dropdown_value)
         
         if len(sort_by):
             dfs = df.sort_values(
@@ -52,5 +52,28 @@ def register_callbacks(dashapp):
         columns = [{'name': i, 'id': i, 'deletable': True} for i in sorted(dfs.columns) ]
 
         data = dfs.iloc[page_current*page_size:(page_current+ 1)*page_size].to_dict('records')
+
+        return columns, data
+
+
+    @dashapp.callback(
+        [
+            Output('table-stats', 'columns'),
+            Output('table-stats', 'data')
+        ],
+        [
+            Input('my-dropdown', 'value')
+         ])
+
+    def update_stats(selection=None):
+        d = Data()
+        df = d.get_raw()
+        
+        df_stats = d.get_stats(df)
+        
+        columns = [{'name': i, 'id': i, 'deletable': True} for i in df_stats.columns ]
+
+        data = df_stats.to_dict('records')
+       
 
         return columns, data
