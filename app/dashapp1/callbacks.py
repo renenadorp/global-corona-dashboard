@@ -5,15 +5,17 @@ from dash.dependencies import Input
 from dash.dependencies import Output
 from app.dashapp1.data.data  import Data
 import dash_table as dtb
+import plotly.graph_objs as go
+
 
 
 def register_callbacks(dashapp):
 
 
-    @dashapp.callback(Output('my-graph-2', 'figure'), [Input('my-dropdown', 'value')])
-    def update_graph_2(selected_dropdown_value):
+    @dashapp.callback(Output('my-graph-2', 'figure'), [Input('selectYearStart', 'value'), Input('selectYearEnd', 'value')])
+    def update_graph_2(selectYearStart, selectYearEnd):
         d = Data()
-        df = d.get_raw(selected_dropdown_value)
+        df = d.get_raw(selectYearStart, selectYearEnd)
 
         return {
             'data': [{
@@ -30,15 +32,16 @@ def register_callbacks(dashapp):
             Output('table-raw', 'data')
         ],
         [
-            Input('table-raw', "page_current"),
-            Input('table-raw', "page_size"),
-            Input('table-raw', 'sort_by'),
-            Input('my-dropdown', 'value')
+            Input('table-raw'      , "page_current"),
+            Input('table-raw'      , "page_size"),
+            Input('table-raw'      , 'sort_by'),
+            Input('selectYearStart', 'value'),
+            Input('selectYearEnd'  , 'value')
          ])
 
-    def update_raw(page_current, page_size, sort_by, selected_dropdown_value):
+    def update_raw(page_current, page_size, sort_by, selectYearStart, selectYearEnd):
         d = Data()
-        df = d.get_raw(selected_dropdown_value)
+        df = d.get_raw(selectYearStart, selectYearEnd)
         
         if len(sort_by):
             dfs = df.sort_values(
@@ -62,10 +65,11 @@ def register_callbacks(dashapp):
             Output('table-stats', 'data')
         ],
         [
-            Input('my-dropdown', 'value')
+            Input('selectYearStart', 'value')
          ])
 
     def update_stats(selection=None):
+
         d = Data()
         df = d.get_raw()
         
@@ -77,3 +81,30 @@ def register_callbacks(dashapp):
        
 
         return columns, data
+
+
+    @dashapp.callback(
+        
+            Output('scatter-map', 'figure')
+        ,
+        [
+            Input('selectYearStart', 'value'),
+            Input('selectYearEnd'  , 'value')
+         ])
+
+    def update_scatter_map( selectYearStart, selectYearEnd):
+        d = Data()
+        df = d.get_raw(selectYearStart, selectYearEnd)[['latitude', 'longitude']]
+        
+        #columns = [{'name': i, 'id': i, 'deletable': True} for i in sorted(df.columns) ]
+
+        trace = go.Scatter(y = df['latitude'], x = df['longitude'],
+                    name = 'Location',
+                    mode='markers')
+        layout = go.Layout(title     = '',
+                           hovermode = 'closest')
+        figure = go.Figure(data = [trace], layout=layout)
+
+        return figure
+
+

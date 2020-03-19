@@ -3,10 +3,13 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc 
 import dash_table as dtb
+import os
 from app.classes import Intro, Nav, Card
 
 
 ### GLOBAL VARS & CONSTANTS ######################################
+CONTENTDIR = os.path.abspath(os.path.dirname(__file__))+'/content'
+
 PAGE_SIZE = 20
 cards=[]
 
@@ -16,76 +19,59 @@ nav = Nav().html
 ### INTRODUCTION ###########################################
 intro = Intro().html
 
-### INTRODUCTION ###########################################
-cards.append( Card(header="Story Introduction", title="", text="Text", body=html.Div([
+### SECTION 01 - STORY INTRODUCTION ###########################################
+cards.append( Card(header="Corona", title="", text="Corona", body=html.Div([
     html.P('''
-        The purpose of this model is to predict resident house prices based on a number of attributes 
-        (e.g. location, number of rooms, year of construction) using Linear Regression.
+          This story covers Corona pandemic of 2020, originating in Wuhan, China.
           '''
         ),  
 ])))
 
-### BUSINESS UNDERSTANDING ###########################################
+### SECTION 02 - BUSINESS UNDERSTANDING ###########################################
+CONTENTFILE = '/section_002/paragraph_001.md'
+
+f = open(CONTENTDIR+CONTENTFILE)
+content = f.read()
+f.close()
 cards.append(Card(header="Business Understanding", title="", text="Text", 
     body=html.Div([
-    html.P('''
-        The purpose of this model is to predict resident house prices based on a number of attributes 
-        (e.g. location, number of rooms, year of construction) using Linear Regression.
-        '''
+    html.P(content
         )
 ])))
 
-### DATA UNDERSTANDING ###########################################
+### SECTION 03 - DATA UNDERSTANDING ###########################################
+CONTENTFILE = '/section_003/paragraph_001.md'
+
+f = open(CONTENTDIR+CONTENTFILE)
+content = f.read()
+f.close()
+
+
 body = html.Div([
     html.H3('Dataset'),
-    dcc.Markdown(
-    '''
-    The data used for this notebook is taken from the GitHub repository of Rui Chang, 
-    and can be found [here](https://raw.githubusercontent.com/RuiChang123/Regression_for_house_price_estimation/master/final_data.csv).
-    The article on Medium by Rui Chang using this dataset (also applying linear regression) can be found [here](https://towardsdatascience.com/linear-regression-in-python-predict-the-bay-areas-home-price-5c91c8378878)
-
-    The dataset contains the following information about houses sold in San Francisco:
-    * address
-    * info
-    * z_address
-    * bathrooms
-    * bedrooms
-    * finishedsqft
-    * lastsolddate
-    * lastsoldprice
-    * latitude
-    * longitude
-    * neighborhood
-    * totalrooms
-    * usecode
-    * yearbuilt
-    * zestimate
-    * zindexvalue
-    * zipcode
-    * zpid
-    '''),
-    html.H3('Graph'),
+    dcc.Markdown(content),
+    html.H3('Graphs'),
     html.Div([    
-    dcc.Dropdown(
-        id='my-dropdown',
-        options=[
-            {'label': 'Coke', 'value': 'COKE'},
-            {'label': 'Tesla', 'value': 'TSLA'},
-            {'label': 'Randstad', 'value': 'RAND.AS'},
-            {'label': 'Apple', 'value': 'AAPL'}
-        ],
-        value='COKE'
-    ),
-    html.Div([
-        dcc.Graph(id='my-graph-2'),
-        
-    ])
-    ]),
-    html.H3('Table'),
 
+        html.Div(
+            dcc.Dropdown(
+                id='selectRegion',
+                options=[{'label': y, 'value': y} for y in range(1)],
+                value='2015'
+            ), className="col-sm"),
+        
+        ], className="row"),
+    html.Div(
+        html.Div([
+        dcc.Graph(id='bubble-map'),
+            
+        ], className="col-lg")
+        , className="row"),   
+   
+    #html.H3('Raw Data'),
     html.Div([
             dtb.DataTable(
-                    id='datatable',
+                    id='table-raw',
                     page_current=0,
                     page_size=PAGE_SIZE,
                     page_action='custom',
@@ -93,8 +79,12 @@ body = html.Div([
                     sort_mode='single',
                     sort_by=[]
                 )
-        ])
+        ]),
+
+
 ])
+
+
 cards.append(Card(header="Data Understanding", 
     title= "",    
     text="Text", 
@@ -105,7 +95,7 @@ cards.append(Card(header="Data Preparation", title= "", text="Text", body=html.D
     html.H2('Data Preparation')
 ])))
 
-### DATA MODELING ###########################################
+### MODELING ##################################################
 cards.append(Card(header="Modeling", title= "", text="Text", body=html.Div([
     html.H2(' Modeling')
 ])))
@@ -128,18 +118,23 @@ cards.append(Card(header="Deployment",
 ])))
 
 
-
 ### CONCLUSION ###########################################
 cards.append(Card(header="Conclusion", 
     title= "", 
     text="Text", 
     body=html.Div([
-    html.H2('Conclustion')
+    html.H2('Conclusion')
 ])))
 
 
 
-page = [nav] + [intro] +[ card.html for card in cards ] 
+content = [ card.html for card in cards ] 
 
-layout = html.Div(page, className="container-fluid")
+layout = html.Div([
+    html.Div(nav,className="w-screen mt-0"),
+    html.Div(intro,className="container-fluid"),
+    html.Div(content,className="container-fluid"),
+
+
+])
 

@@ -18,6 +18,7 @@ import dash_table
 
 import plotly.express as px
 
+THEME=[dbc.themes.LUX] #LUX/SKETCHY/DARKLY/SIMPLY/
 
 def create_app():
     server = Flask(__name__)
@@ -44,7 +45,7 @@ def register_dashapps(app):
                          url_base_pathname='/story1/',
                          assets_folder=get_root_path(__name__) + '/story1/assets/',
                          meta_tags=[meta_viewport],
-                         external_stylesheets=[dbc.themes.LUX])
+                         external_stylesheets=THEME)
 
     with app.app_context():
         dashapp1.title = 'Medium Data Science Journey - Story 1'
@@ -66,7 +67,7 @@ def register_dashapps(app):
                          url_base_pathname='/story2/',
                          assets_folder=get_root_path(__name__) + '/story2/assets/',
                          meta_tags=[meta_viewport],
-                         external_stylesheets=[dbc.themes.LUX])
+                         external_stylesheets=THEME)
 
     with app.app_context():
         dashapp2.title = 'Medium Data Science Journey - Story 2'
