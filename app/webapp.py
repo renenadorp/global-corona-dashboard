@@ -21,7 +21,8 @@ server_bp = Blueprint('main', __name__)
 
 @server_bp.route('/')
 def index():
-    return render_template("index.html", title='Home Page')
+    return  redirect(url_for('/dashboard/'))
+    #return render_template("index.html", title='Home Page')
 
 
 @server_bp.route('/login/', methods=['GET', 'POST'])

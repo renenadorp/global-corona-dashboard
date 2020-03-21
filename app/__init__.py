@@ -42,17 +42,17 @@ def register_dashapps(app):
 
     dashapp1 = dash.Dash(__name__,
                          server=app,
-                         url_base_pathname='/story1/',
-                         assets_folder=get_root_path(__name__) + '/story1/assets/',
+                         url_base_pathname='/dashboard/',
+                         assets_folder=get_root_path(__name__) + '/dashboard/assets/',
                          meta_tags=[meta_viewport],
                          external_stylesheets=THEME)
 
     with app.app_context():
-        dashapp1.title = 'Medium Data Science Journey - Story 1'
+        dashapp1.title = 'Global Corona Dashboard'
         dashapp1.layout = layout
         register_callbacks(dashapp1)
 
-    _protect_dashviews(dashapp1)
+    #_protect_dashviews(dashapp1) No need to login for dashboards
 
 def _protect_dashviews(dashapp):
     for view_func in dashapp.server.view_functions:
