@@ -43,7 +43,7 @@ def register_callbacks(dashapp):
             showrivers=False, rivercolor="Blue"
         
         )
-        fig.update_layout(showlegend=False,  height=700, template='plotly_dark')
+        fig.update_layout(showlegend=False,  height=750, template='plotly_dark')
 
         t_1 = dt.now()
 
@@ -69,6 +69,10 @@ def register_callbacks(dashapp):
         df  = d.get_data_confirmed()[[ 'Country', 'Count', 'Date']]
         max_date=df['Date'].max()
         dfs = df[df.Date==max_date]
+        
+        dfs = dfs.groupby('Country')['Count'].sum().reset_index(name='Count')
+
+
         dfs = dfs.sort_values(by='Count',
             ascending=False,
             inplace=False
