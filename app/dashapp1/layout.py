@@ -79,9 +79,8 @@ card_confirmed_cases =Card(header="Confirmed Cases", title= "", text="Text", bod
 #projections = ['equirectangular', 'mercator', 'orthographic', 'natural earth', 'kavrayskiy7', 'miller', 'robinson', 'eckert4', 'azimuthal equal area', 'azimuthal equidistant', 'conic equal area', 'conic conformal', 'conic equidistant', 'gnomonic', 'stereographic', 'mollweide', 'hammer', 'transverse mercator', 'albers usa', 'winkel tripel', 'aitoff',  'sinusoidal']
 body_globe = html.Div([
 
-                html.Div(dcc.Graph(id='bubble-map' , config={'displayModeBar': False}
-            )),  
-               html.Div([    
+                html.Div(dcc.Graph(id='bubble-map' , config={'displayModeBar': False} )),  
+                html.Div([    
                 html.Div(
                     dcc.Dropdown(
                         id='selectCountry',
@@ -120,8 +119,6 @@ body_total_recovered = \
                     )
                 ]         )
 card_total_recovered =Card(header="Total Recovered", title= "", text="Text", body=body_total_recovered)
-
-
 
 ### PAGE LAYOUT #############################################
 layout = html.Div([

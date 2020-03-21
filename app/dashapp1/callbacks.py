@@ -43,7 +43,7 @@ def register_callbacks(dashapp):
             showrivers=False, rivercolor="Blue"
         
         )
-        fig.update_layout(showlegend=False,  height=750, template='plotly_dark')
+        fig.update_layout(showlegend=False,  height=700, template='plotly_dark')
 
         t_1 = dt.now()
 
