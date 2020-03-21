@@ -13,7 +13,7 @@ class Nav(object):
         self.html= html.Div([
         dbc.NavbarSimple(
         children=[
-            dbc.NavItem(dbc.NavLink("Home",       href="#Home",           external_link=True)),
+            #dbc.NavItem(dbc.NavLink("Home",       href="#Home",           external_link=True)),
             
             ],
     brand="Global Corona Dashboard",
@@ -22,8 +22,9 @@ class Nav(object):
     color="dark",
     dark=True,
     # fixed="top"
-    )  
-    ,
+    ),
+    html.Div(style={'margin-top':'5px'})  
+    
   ], className="w-screen")
 
 class Card(object):

@@ -86,7 +86,8 @@ body_globe = html.Div([
                     dcc.Dropdown(
                         id='selectCountry',
                         options=[{'label': c, 'value': c} for c in countries],
-                    )),              
+                    )
+                    ,className="invisible"),              
                 ]), 
         ])  
 card_globe =Card(header="Global Spread", title= "", text="Text", body=body_globe)
