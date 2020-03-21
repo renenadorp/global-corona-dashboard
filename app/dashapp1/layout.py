@@ -8,7 +8,6 @@ from app.classes import Intro, Nav, Card
 from app.dashapp1.data.data  import Data
 
 
-
 ### GLOBAL VARS & CONSTANTS ######################################
 colors = {
     'background'        : '#222222',
