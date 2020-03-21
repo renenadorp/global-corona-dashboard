@@ -16,9 +16,9 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc 
 import dash_table
 
-import plotly.express as px
+#import plotly.express as px
 
-THEME=[dbc.themes.LUX] #LUX/SKETCHY/DARKLY/SIMPLY/
+THEME=[dbc.themes.DARKLY] #LUX/SKETCHY/DARKLY/SIMPLY/
 
 def create_app():
     server = Flask(__name__)
@@ -53,29 +53,6 @@ def register_dashapps(app):
         register_callbacks(dashapp1)
 
     _protect_dashviews(dashapp1)
-
-
-    ### App2 = Story 2 #################################################
-    from app.dashapp2.layout import layout
-    from app.dashapp2.callbacks import register_callbacks
-
-    # Meta tags for viewport responsiveness
-    meta_viewport = {"name": "viewport", "content": "width=device-width, initial-scale=1, shrink-to-fit=no"}
-
-    dashapp2 = dash.Dash(__name__,
-                         server=app,
-                         url_base_pathname='/story2/',
-                         assets_folder=get_root_path(__name__) + '/story2/assets/',
-                         meta_tags=[meta_viewport],
-                         external_stylesheets=THEME)
-
-    with app.app_context():
-        dashapp2.title = 'Medium Data Science Journey - Story 2'
-        dashapp2.layout = layout
-        register_callbacks(dashapp2)
-
-    _protect_dashviews(dashapp2)
-
 
 def _protect_dashviews(dashapp):
     for view_func in dashapp.server.view_functions:

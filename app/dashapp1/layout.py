@@ -5,153 +5,157 @@ import dash_bootstrap_components as dbc
 import dash_table as dtb
 import os
 from app.classes import Intro, Nav, Card
+from app.dashapp1.data.data  import Data
+
 
 
 ### GLOBAL VARS & CONSTANTS ######################################
-CONTENTDIR = os.path.abspath(os.path.dirname(__file__))+'/content'
+colors = {
+    'background'        : '#222222',
+    'ocean'             : '#222222',
+    'land'              : '#222222',
+    'text'              : '#7FDBFF',
+    'marker_confirmed'  : '#91221A',
+    'text_confirmed'    : '#d42c1f',
+    'text_recovered'    : '#67c94d',
+    'text_active'       : '#f09135',
+    'text_deaths'       : '#fffff'
+}
 
 PAGE_SIZE = 20
-cards=[]
 
-### NAVBAR ################################################
+d=Data()
+countries=d.get_countries()
+
+### NAVBAR ###################################################
 nav = Nav().html
 
-### INTRODUCTION ###########################################
-intro = Intro().html
+### TOTAL CASES BY COUNTRY #################################
+body_total_confirmed_cases = \
+       html.Div(
+                [
+                    html.H1('',
+                        id="total-confirmed-cases",
+                        style={
+                            'textAlign': 'center',
+                            'color': colors['text_confirmed']
+                        }
+                    )
+                ]         )
+card_total_confirmed_cases =Card(header="Total Confirmed Cases", title= "", text="Text", body=body_total_confirmed_cases)
 
-### SECTION 01 - STORY INTRODUCTION ###########################################
-cards.append( Card(header="Story Introduction", title="", text="Linear Regression", body=html.Div([
-    html.P('''
-          This story covers Linear Regression.
-          '''
-        ),  
-])))
-
-### SECTION 02 - BUSINESS UNDERSTANDING ###########################################
-cards.append(Card(header="Business Understanding", title="", text="Text", 
-    body=html.Div([
-    html.P('''
-        The purpose of the model is to predict resident house prices based on a number of attributes 
-        (e.g. location, number of rooms, year of construction) using Linear Regression.
-        '''
-        )
-])))
-
-### SECTION 03 - DATA UNDERSTANDING ###########################################
-CONTENTFILE = '/section_003/paragraph_001.md'
-
-f = open(CONTENTDIR+CONTENTFILE)
-content = f.read()
-f.close()
-
-
-body = html.Div([
-    html.H3('Dataset'),
-    dcc.Markdown(content),
-    html.H3('Graphs'),
-    html.Div([    
-        html.Div(
-        dcc.Dropdown(
-            id='selectYearStart',
-            options=[{'label': y, 'value': y} for y in range(2000,2020)],
-            value='2001'
-            ), className="col-sm"),
-        html.Div(
-            dcc.Dropdown(
-                id='selectYearEnd',
-                options=[{'label': y, 'value': y} for y in range(2000,2020)],
-                value='2015'
-            ), className="col-sm"),
-        
-        ], className="row"),
-    html.Div(
-        html.Div([
-        dcc.Graph(id='my-graph-2'),
-            
-        ], className="col-lg")
-            , className="row"),   
-    html.Div([
-           dcc.Graph( id='scatter-map',),  ]),
-
-    html.H3('Raw Data'),
+### CONFIRMED CASES BY COUNTRY #################################
+body_confirmed_cases = \
     html.Div([
             dtb.DataTable(
-                    id='table-raw',
+                    id='table-confirmed-cases',
                     page_current=0,
                     page_size=PAGE_SIZE,
                     page_action='custom',
                     sort_action='custom',
                     sort_mode='single',
-                    sort_by=[]
+                    sort_by=[],
+                    style_header={'backgroundColor': colors['background']},
+                    style_cell={
+                        'backgroundColor': colors['background'],
+                        'color': '#d6d6d6',
+                        'font-size':15,
+                        'border': '0px',
+                        'maxWidth':0,
+                        'textOverflow': 'ellipsis'
+                    },
+                    style_data_conditional=[{
+                        'if': {'column_id': 'Count'},
+                        'backgroundColor': colors['background'],
+                        'font-weight':'bold',
+                        'font-size':20,
+
+                        'color': colors['text_confirmed'],
+                    }]
                 )
-        ]),
-    html.H3('Statistics'),
+        ])
+card_confirmed_cases =Card(header="Confirmed Cases", title= "", text="Text", body=body_confirmed_cases)
 
-    html.Div([
-            dtb.DataTable(
-                    id='table-stats',
-                    page_current=0,
-                    page_size=PAGE_SIZE,
-                    page_action='custom',
-                    sort_action='custom',
-                    sort_mode='single',
-                    sort_by=[]
-                )
-        ]),
+### GOBAL SPREAD ################################################
+#projections = ['equirectangular', 'mercator', 'orthographic', 'natural earth', 'kavrayskiy7', 'miller', 'robinson', 'eckert4', 'azimuthal equal area', 'azimuthal equidistant', 'conic equal area', 'conic conformal', 'conic equidistant', 'gnomonic', 'stereographic', 'mollweide', 'hammer', 'transverse mercator', 'albers usa', 'winkel tripel', 'aitoff',  'sinusoidal']
+body_globe = html.Div([
 
-])
+                html.Div(dcc.Graph(id='bubble-map' , config={'displayModeBar': False}
+            )),  
+               html.Div([    
+                html.Div(
+                    dcc.Dropdown(
+                        id='selectCountry',
+                        options=[{'label': c, 'value': c} for c in countries],
+                    )),              
+                ]), 
+        ])  
+card_globe =Card(header="Global Spread", title= "", text="Text", body=body_globe)
 
-
-cards.append(Card(header="Data Understanding", 
-    title= "",    
-    text="Text", 
-    body=body))
-
-### DATA PREPARATION ###########################################
-cards.append(Card(header="Data Preparation", title= "", text="Text", body=html.Div([
-    html.H2('Data Preparation')
-])))
-
-### MODELING ##################################################
-cards.append(Card(header="Modeling", title= "", text="Text", body=html.Div([
-    html.H2(' Modeling')
-])))
-
-### EVALUATION ###########################################
-cards.append(Card(header="Evaluation", 
-    title= "", 
-    text="Text", 
-    body=html.Div([
-    html.H2('Evaluation')
-])))
+### TOTAL DEATHS #############################################
+body_total_deaths = \
+       html.Div(
+                [
+                    html.H1('..',
+                        id="total-deaths",
+                        style={
+                            'textAlign': 'center',
+                            'color': colors['text_deaths']
+                        }
+                    )
+                ]         )
+card_total_deaths =Card(header="Total Deaths", title= "", text="Text", body=body_total_deaths)
 
 
-### DEPLOYMENT ###########################################
-cards.append(Card(header="Deployment", 
-    title= "", 
-    text="Text", 
-    body=html.Div([
-    html.H2('Deployment')
-])))
-
-
-### CONCLUSION ###########################################
-cards.append(Card(header="Conclusion", 
-    title= "", 
-    text="Text", 
-    body=html.Div([
-    html.H2('Conclusion')
-])))
+## TOTAL RECOVERED #############################################
+body_total_recovered = \
+       html.Div(
+                [
+                    html.H1('..',
+                        id="total-recovered",
+                        style={
+                            'textAlign': 'center',
+                            'color': colors['text_recovered']
+                        }
+                    )
+                ]         )
+card_total_recovered =Card(header="Total Recovered", title= "", text="Text", body=body_total_recovered)
 
 
 
-content = [ card.html for card in cards ] 
-
+### PAGE LAYOUT #############################################
 layout = html.Div([
-    html.Div(nav,className="w-screen mt-0"),
-    html.Div(intro,className="container-fluid"),
-    html.Div(content,className="container-fluid"),
+    html.Div(nav
+    ,className="w-screen mt-0"),
+    html.Div([
+
+        html.Div(
+            [
+                ## LEFT COLUMN
+                html.Div([
+                    html.Div(card_confirmed_cases.html)
+                    ], 
+                className="col"),        
+                
+                # MIDDLE COLUMN
+                html.Div(
+                    card_globe.html 
+                ,className="col-8"),
+
+                ## RIGHT COLUMN
+                html.Div([
+                card_total_confirmed_cases.html,
+                card_total_deaths.html,
+                card_total_recovered.html,
+                ], className="col"),        
+                
+            ]
+            , className="row"),   
+
+        ]       
+    ,className="container-fluid"),
+    ]
+    )
 
 
-])
 

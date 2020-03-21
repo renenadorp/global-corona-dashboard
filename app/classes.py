@@ -5,33 +5,18 @@ import os
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
+
 class Nav(object):
 
-    def __init__(self,label='Stories'):
+    def __init__(self,label='='):
 
         self.html= html.Div([
         dbc.NavbarSimple(
         children=[
-            dbc.NavItem(dbc.NavLink("Intro",      href="#Introduction",           external_link=True)),
-            dbc.NavItem(dbc.NavLink("Business",   href="#Business Understanding", external_link=True)),
-            dbc.NavItem(dbc.NavLink("Data",       href="#Data Understanding",     external_link=True)),
-            dbc.NavItem(dbc.NavLink("Prep",       href="#Data Preparation",       external_link=True)),
-            dbc.NavItem(dbc.NavLink("Model",      href="#Modeling",               external_link=True)),
-            dbc.NavItem(dbc.NavLink("Eval",       href="#Evaluation",             external_link=True)),
-            dbc.NavItem(dbc.NavLink("Deploy",     href="#Deployment",             external_link=True)),
-            dbc.NavItem(dbc.NavLink("Conclusion", href="#Conclusion",             external_link=True)),
-            dbc.DropdownMenu(
-                children=[
-                    dbc.DropdownMenuItem("Story 1 - Linear Regression", href="/story1",external_link=True,),
-                    dbc.DropdownMenuItem("Story 2 - Corona"           , href="/story2",external_link=True,),                
-                    dbc.DropdownMenuItem("Story 3"                    , href="/story3",external_link=True,),                    
-                    ],
-                nav=True,
-                in_navbar=True,
-                label=label,
-            ),
+            dbc.NavItem(dbc.NavLink("Home",       href="#Home",           external_link=True)),
+            
             ],
-    brand="Machine Learning: A Journey",
+    brand="Global Corona Dashboard",
     brand_href="/",
     brand_external_link=True,
     color="dark",
