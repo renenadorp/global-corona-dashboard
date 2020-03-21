@@ -10,8 +10,6 @@ import plotly.express as px
 
 def register_callbacks(dashapp):
 
-
-
     @dashapp.callback(
         
             Output('bubble-map', 'figure')
