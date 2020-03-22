@@ -6,7 +6,7 @@ import dash_table as dtb
 import os
 from app.classes import Intro, Nav, Card
 from app.dashapp1.data.data  import Data
-
+import plotly.graph_objects as go
 
 ### GLOBAL VARS & CONSTANTS ######################################
 colors = {
@@ -33,7 +33,7 @@ nav = Nav().html
 body_total_confirmed_cases = \
        html.Div(
                 [
-                    html.H1('',
+                    html.H1('..',
                         id="total-confirmed-cases",
                         style={
                             'textAlign': 'center',
@@ -70,7 +70,17 @@ body_confirmed_cases = \
                         'font-size':20,
 
                         'color': colors['text_confirmed'],
-                    }]
+                        },
+                        {
+                        'if': {
+                            'column_id': 'Country',
+                            'filter_query': '{Country} = "Netherlands"'
+                        },
+                        
+                        'color': colors['text_confirmed'],
+                        'font-weight': 'bold',
+                         }
+                        ]
                 )
         ])
 card_confirmed_cases =Card(header="Confirmed Cases", title= "", text="Text", body=body_confirmed_cases)
@@ -79,7 +89,30 @@ card_confirmed_cases =Card(header="Confirmed Cases", title= "", text="Text", bod
 #projections = ['equirectangular', 'mercator', 'orthographic', 'natural earth', 'kavrayskiy7', 'miller', 'robinson', 'eckert4', 'azimuthal equal area', 'azimuthal equidistant', 'conic equal area', 'conic conformal', 'conic equidistant', 'gnomonic', 'stereographic', 'mollweide', 'hammer', 'transverse mercator', 'albers usa', 'winkel tripel', 'aitoff',  'sinusoidal']
 body_globe = html.Div([
 
-                html.Div(dcc.Graph(id='bubble-map' , config={'displayModeBar': False} )),  
+                html.Div(dcc.Graph(id='bubble-map' , config={'displayModeBar': False}, 
+                figure={
+                        'layout':go.Layout(
+                            template = 'plotly_dark',
+
+                            height=700,
+
+                            annotations=[
+                                        go.layout.Annotation(
+                                            text='Please wait for the map to load',
+                                            align='center',
+                                            showarrow=False,
+                                            xref='paper',
+                                            yref='paper',
+                                            x=0.5,
+                                            y=0.5,
+                                            bordercolor='black',
+                                            borderwidth=0
+                                        )
+                                    ]
+
+                    )
+			        }
+                )),  
                 html.Div([    
                 html.Div(
                     dcc.Dropdown(

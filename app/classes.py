@@ -13,8 +13,15 @@ class Nav(object):
         self.html= html.Div([
         dbc.NavbarSimple(
         children=[
-            #dbc.NavItem(dbc.NavLink("Home",       href="#Home",           external_link=True)),
-            
+            dbc.DropdownMenu(
+                children=[
+                    dbc.DropdownMenuItem("CSSE",         href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",external_link=True,),
+                    dbc.DropdownMenuItem("Healthmap"   , href="https://www.healthmap.org/covid-19/",external_link=True,),                
+                    ],
+                nav=True,
+                in_navbar=True,
+                label="Other Corona Dashboards",
+            ),           
             ],
     brand="Global Corona Dashboard",
     brand_href="/",
