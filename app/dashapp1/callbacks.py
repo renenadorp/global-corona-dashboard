@@ -6,6 +6,8 @@ from dash.dependencies import Output
 from app.dashapp1.data.data  import Data
 import dash_table as dtb
 import plotly.express as px
+import plotly.io as pio
+
 
 
 def register_callbacks(dashapp):
