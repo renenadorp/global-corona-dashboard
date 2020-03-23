@@ -7,19 +7,20 @@ from app.dashapp1.data.data  import Data
 import dash_table as dtb
 import plotly.express as px
 import plotly.io as pio
+import plotly.graph_objects as go
 
 
 
 def register_callbacks(dashapp):
 
+    ### MAIN MAP
     @dashapp.callback(
         
-            Output('bubble-map', 'figure')
+            Output('main-map', 'figure')
         ,
         [
             Input('selectCountry', 'value')
          ])
-
     def update_map( selectCountry="Netherlands"):
         t_0 = dt.now()
         d = Data()
@@ -38,7 +39,7 @@ def register_callbacks(dashapp):
                             projection=selectCountry) #'https://plot.ly/python-api-reference/generated/plotly.express.scatter_geo.html
         fig.update_geos(
             resolution=50,
-            showcoastlines=True, coastlinecolor="#2a2a28",
+            showcoastlines=True, coastlinecolor="#9c9c9b",
             showland=True, landcolor="#2a2a28",
             showocean=True, oceancolor="#030f19",
             showlakes=False, lakecolor="Blue",
@@ -53,7 +54,30 @@ def register_callbacks(dashapp):
 
         return fig
 
+    ### MAIN TABLE
+    @dashapp.callback(
+        [
+            Output('main-table', 'columns'),
+            Output('main-table', 'data')
+        ],
+        [
+            Input('main-table', "page_current"),
+            Input('main-table', "page_size"),
 
+         ])
+    def update_main_table(page_current, page_size):
+        d   = Data()
+        dfs=d.get_data_combined()
+        dfs=dfs.sort_values(by=['CountConfirmed'], ascending=False).reset_index()
+        
+        columns = [{'name': i, 'id': i, 'deletable': True} for i in dfs.columns ]
+        
+        data = dfs.iloc[page_current*page_size:(page_current+ 1)*page_size].to_dict('records')
+
+
+        return columns, data
+
+    ### CONFIRMED BY COUNTRY
     @dashapp.callback(
         [
             Output('table-confirmed-cases', 'columns'),
@@ -65,7 +89,6 @@ def register_callbacks(dashapp):
             Input('table-confirmed-cases', 'sort_by'),
 
          ])
-
     def update_confirmed_cases(page_current, page_size, sort_by="Count"):
         d   = Data()
         df  = d.get_data_confirmed()[[ 'Country', 'Count', 'Date']]
@@ -86,8 +109,7 @@ def register_callbacks(dashapp):
 
         return columns, data
 
-
-
+    ### TOTAL CONFIRMED 
     @dashapp.callback(
         
             Output('total-confirmed-cases', 'children')
@@ -95,7 +117,6 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-
     def update_total_confirmed_cases( selectCountry="Netherlands"):
         t_0 = dt.now()
         
@@ -110,8 +131,8 @@ def register_callbacks(dashapp):
         print('Elapsed time: ' , t_1 - t_0)
 
         return total_cases
-
   
+    ### TOTAL DEATHS    
     @dashapp.callback(
         
             Output('total-deaths', 'children')
@@ -119,7 +140,6 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-
     def update_total_deaths( selectCountry="equirectangular"):
         t_0 = dt.now()
         
@@ -135,7 +155,7 @@ def register_callbacks(dashapp):
 
         return total_cases
 
-    
+    ### TOTAL RECOVERED
     @dashapp.callback(
         
             Output('total-recovered', 'children')
@@ -143,8 +163,7 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-
-    def update_total_recovered( selectCountry="equirectangular"):
+    def update_total_recovered( selectCountry="Netherlands"):
         t_0 = dt.now()
         
         d   = Data()
@@ -158,3 +177,29 @@ def register_callbacks(dashapp):
         print('Elapsed time: ' , t_1 - t_0)
 
         return total_cases
+
+    ### MAIN GRAPH
+    @dashapp.callback(
+        
+            Output('main-graph', 'figure')
+        ,
+        [
+            Input('selectCountry', 'value')
+         ])
+    def update_main_graph(selectCountry="Netherlands"):
+        t_0 = dt.now()
+        
+        d   = Data()
+        df  = d.get_data_combined(most_recent_only=False)
+        print(df.columns)
+        t_1 = dt.now()
+
+        print('Elapsed time: ' , t_1 - t_0)
+        figure= go.Scatter(
+            x=df['Date'],
+            y=df['CountConfirmed'],
+            text='CountConfirmed'
+            )
+        return figure
+
+    

@@ -54,3 +54,23 @@ class Data(object):
         countries=df['Country/Region'].unique()
         return countries
 
+    def get_data_combined(self, most_recent_only=True):
+        df_confirmed  = self.get_data_confirmed()[['Country', 'State', 'Date', 'CountConfirmed']]
+        df_deaths     = self.get_data_deaths()[['Country', 'State', 'Date', 'CountDeaths']]
+        df_recovered  = self.get_data_recovered()[['Country', 'State', 'Date', 'CountRecovered']]
+
+        if most_recent_only:
+            
+            max_date_confirmed=df_confirmed['Date'].max()
+
+            #Select most recent date
+            df_confirmed = df_confirmed[df_confirmed.Date==max_date_confirmed]
+            df_deaths    = df_deaths[df_deaths.Date==max_date_confirmed]
+            df_recovered = df_recovered[df_recovered.Date==max_date_confirmed]
+
+        #Concatenate datasets: confirmed, deaths, recovered
+        dfc= pd.concat([df_confirmed.set_index(['Date','Country','State'], inplace=False), 
+                        df_deaths.set_index(['Date','Country','State'], inplace=False), 
+                        df_recovered.set_index(['Date','Country','State'], inplace=False)], 
+                        axis=1)
+        return dfc.reset_index()
