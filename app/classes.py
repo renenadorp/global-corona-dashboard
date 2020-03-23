@@ -5,7 +5,6 @@ import os
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
-
 class Nav(object):
 
     def __init__(self,label='='):
@@ -38,19 +37,34 @@ class Card(object):
 
     def __init__(self,header, title, text, body):
 
-        self.html= html.Div([html.Div(
-        [
-            html.A(id=header),
-            html.H5(header,    className="card-header "),
-            html.Div([
-                html.H5(title, className="card-title"),
-                html.P(body,   className="card-text"),
-            ],
-            className="card-body"
+        self.html= \
+            dbc.Card(
+                [
+                    dbc.CardHeader(header
+    
+                    ),
+                    dbc.CardBody(html.P(body, id="card-content-"+header, className="card-text")),
+                ]
             )
-        ],className="card "),
-        html.P()
-        ])
+
+
+class TabCard(object):
+    def __init__(self, name, tabcards=None):
+
+        self.html = \
+            dbc.Card(
+                    [
+                        dbc.CardHeader(
+                            dbc.Tabs(
+                                [ dbc.Tab(dbc.CardBody(html.P(tabcard["tab_body"], id="card-content-"+tabcard["tab_label"], className="card-text")), label = tabcard["tab_label"], tab_id="tab-"+name+"-"+str(i) ) for i, tabcard in enumerate(tabcards) ],
+                                id="card-tabs-"+name,
+                                card=True,
+                                active_tab="tab-"+name+"-0",
+                            )
+                        ),
+                    ]
+                )
+
 
 class Intro(object):
 

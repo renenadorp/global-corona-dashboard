@@ -4,7 +4,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc 
 import dash_table as dtb
 import os
-from app.classes import Intro, Nav, Card
+from app.classes import Intro, Nav, Card, TabCard
 from app.dashapp1.data.data  import Data
 import plotly.graph_objects as go
 
@@ -18,7 +18,8 @@ colors = {
     'text_confirmed'    : '#d42c1f',
     'text_recovered'    : '#67c94d',
     'text_active'       : '#f09135',
-    'text_deaths'       : '#fffff'
+    'text_deaths'       : '#ffffff',
+    'coastline'         : '#2a2a28'
 }
 
 PAGE_SIZE = 20
@@ -85,44 +86,97 @@ body_confirmed_cases = \
         ])
 card_confirmed_cases =Card(header="Confirmed Cases", title= "", text="Text", body=body_confirmed_cases)
 
-### GOBAL SPREAD ################################################
-#projections = ['equirectangular', 'mercator', 'orthographic', 'natural earth', 'kavrayskiy7', 'miller', 'robinson', 'eckert4', 'azimuthal equal area', 'azimuthal equidistant', 'conic equal area', 'conic conformal', 'conic equidistant', 'gnomonic', 'stereographic', 'mollweide', 'hammer', 'transverse mercator', 'albers usa', 'winkel tripel', 'aitoff',  'sinusoidal']
-body_globe = html.Div([
+### MAP ################################################
+body_map = \
+    html.Div([
+            html.Div(dcc.Graph(id='main-map' , config={'displayModeBar': False}, 
+            figure={
+                    'layout':go.Layout(
+                        template = 'plotly_dark',
 
-                html.Div(dcc.Graph(id='bubble-map' , config={'displayModeBar': False}, 
-                figure={
-                        'layout':go.Layout(
-                            template = 'plotly_dark',
+                        height=700,
 
-                            height=700,
+                        annotations=[
+                                    go.layout.Annotation(
+                                        text='Please wait for the map to load',
+                                        align='center',
+                                        showarrow=False,
+                                        xref='paper',
+                                        yref='paper',
+                                        x=0.5,
+                                        y=0.5,
+                                        bordercolor='black',
+                                        borderwidth=0
+                                    )
+                                ]
 
-                            annotations=[
-                                        go.layout.Annotation(
-                                            text='Please wait for the map to load',
-                                            align='center',
-                                            showarrow=False,
-                                            xref='paper',
-                                            yref='paper',
-                                            x=0.5,
-                                            y=0.5,
-                                            bordercolor='black',
-                                            borderwidth=0
-                                        )
-                                    ]
+                )
+                }
+            )),  
+            html.Div([    
+            html.Div(
+                dcc.Dropdown(
+                    id='selectCountry',
+                    options=[{'label': c, 'value': c} for c in countries],
+                )
+                ,className="invisible"),              
+            ]), 
+    ])  
 
-                    )
-			        }
-                )),  
-                html.Div([    
-                html.Div(
-                    dcc.Dropdown(
-                        id='selectCountry',
-                        options=[{'label': c, 'value': c} for c in countries],
-                    )
-                    ,className="invisible"),              
-                ]), 
-        ])  
-card_globe =Card(header="Global Spread", title= "", text="Text", body=body_globe)
+body_table = \
+    html.Div([
+            dtb.DataTable(
+                    id='main-table',
+                    page_current=0,
+                    page_size=PAGE_SIZE,
+                    page_action='custom',
+                    sort_action='custom',
+                    sort_mode='single',
+                    sort_by=[],
+                    style_header={'backgroundColor': colors['background']},
+                    style_cell={
+                        'backgroundColor': colors['background'],
+                        'color': '#d6d6d6',
+                        'font-size':15,
+                        'border': '0px',
+                        'maxWidth':0,
+                        'textOverflow': 'ellipsis'
+                    },
+                    style_data_conditional=[{
+                        'if': {'column_id': 'Count'},
+                        'backgroundColor': colors['background'],
+                        'font-weight':'bold',
+                        'font-size':20,
+
+                        'color': colors['text_confirmed'],
+                        },
+                        {
+                        'if': {
+                            'column_id': 'Country',
+                            'filter_query': '{Country} = "Netherlands"'
+                        },
+                        
+                        'color': colors['text_confirmed'],
+                        'font-weight': 'bold',
+                         }
+                        ]
+                )
+        ])
+
+body_graph = \
+    html.Div([
+    dcc.Graph(id='main-graph'),
+    ], className=""
+    )
+
+tabcards_main = \
+    [ 
+        {"tab_label": "Map"         , "tab_body": body_map},
+        {"tab_label": "Table"       , "tab_body": body_table}
+        # {"tab_label": "Graph"       , "tab_body": body_graph}
+    ]
+
+card_main =TabCard(name="CardMain",  tabcards=tabcards_main)
 
 ### TOTAL DEATHS #############################################
 body_total_deaths = \
@@ -168,10 +222,11 @@ layout = html.Div([
                 className="col"),        
                 
                 # MIDDLE COLUMN
-                html.Div(
-                    card_globe.html 
-                ,className="col-8"),
-
+                html.Div([card_main.html]
+                     
+                ,className="col-8"), 
+                
+                
                 ## RIGHT COLUMN
                 html.Div([
                 card_total_confirmed_cases.html,
