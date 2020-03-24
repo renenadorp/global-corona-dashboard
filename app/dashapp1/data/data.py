@@ -67,6 +67,8 @@ class Data(object):
                         df_deaths.set_index(['Date','Country','State'], inplace=False), 
                         df_recovered.set_index(['Date','Country','State'], inplace=False)], 
                         axis=1)
+        dfc = dfc.groupby(['Date','Country']).sum()
+
         return dfc.reset_index().dropna()
 
     def get_countries(self):   

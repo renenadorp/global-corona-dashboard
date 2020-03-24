@@ -209,7 +209,7 @@ def register_callbacks(dashapp):
             x=df[(df['Country']==selectCountry)]['Date'],
             y=df[(df['Country']==selectCountry)]['CountConfirmed'],
             name='CountConfirmed',
-            line=dict(color=colors.get('marker_confirmed'), width=1),
+            line=dict(color=colors.get('marker_confirmed'), width=3),
             mode='lines',
             text='CountConfirmed',
             connectgaps=True
@@ -219,7 +219,7 @@ def register_callbacks(dashapp):
             x=df[(df['Country']==selectCountry)]['Date'],
             y=df[(df['Country']==selectCountry)]['CountDeaths'],
             name='CountDeaths',
-            line=dict(color=colors.get('marker_deaths'), width=1),
+            line=dict(color=colors.get('marker_deaths'), width=3),
             mode='lines',
             text='CountDeaths',
             connectgaps=True,
@@ -229,7 +229,7 @@ def register_callbacks(dashapp):
             x=df[(df['Country']==selectCountry)]['Date'],
             y=df[(df['Country']==selectCountry)]['CountRecovered'],
             name='CountRecovered',
-            line=dict(color=colors.get('marker_recovered'), width=1),
+            line=dict(color=colors.get('marker_recovered'), width=3),
             mode='lines',
             text='CountRecovered',
             connectgaps=True
