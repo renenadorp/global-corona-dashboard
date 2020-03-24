@@ -18,7 +18,7 @@ class Data(object):
         df_pivot['Date'] = pd.to_datetime(df_pivot[['Year', 'Month' , 'Day']])
         df_pivot['Count'] = df_pivot["CountConfirmed"]
 
-        return df_pivot
+        return df_pivot.fillna(0)
 
     def get_data_deaths(self):
        
@@ -32,7 +32,7 @@ class Data(object):
         df_pivot['Date'] = pd.to_datetime(df_pivot[['Year', 'Month' , 'Day']])
         df_pivot['Count'] = df_pivot["CountDeaths"]
 
-        return df_pivot
+        return df_pivot.fillna(0)
 
     def get_data_recovered(self):
        
@@ -46,13 +46,7 @@ class Data(object):
         df_pivot['Date'] = pd.to_datetime(df_pivot[['Year', 'Month' , 'Day']])
         df_pivot['Count'] = df_pivot["CountRecovered"]
 
-        return df_pivot
-
-    def get_countries(self):
-       
-        df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv')
-        countries=df['Country/Region'].unique()
-        return countries
+        return df_pivot.fillna(0)
 
     def get_data_combined(self, most_recent_only=True):
         df_confirmed  = self.get_data_confirmed()[['Country', 'State', 'Date', 'CountConfirmed']]
@@ -73,4 +67,9 @@ class Data(object):
                         df_deaths.set_index(['Date','Country','State'], inplace=False), 
                         df_recovered.set_index(['Date','Country','State'], inplace=False)], 
                         axis=1)
-        return dfc.reset_index()
+        return dfc.reset_index().dropna()
+
+    def get_countries(self):   
+        df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv')
+        countries=sorted(df['Country/Region'].unique())
+        return countries

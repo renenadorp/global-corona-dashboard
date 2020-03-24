@@ -3,24 +3,13 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc 
 import dash_table as dtb
+import plotly.graph_objects as go
 import os
 from app.classes import Intro, Nav, Card, TabCard
 from app.dashapp1.data.data  import Data
-import plotly.graph_objects as go
+from app.dashapp1.colors import colors
 
 ### GLOBAL VARS & CONSTANTS ######################################
-colors = {
-    'background'        : '#222222',
-    'ocean'             : '#222222',
-    'land'              : '#222222',
-    'text'              : '#7FDBFF',
-    'marker_confirmed'  : '#91221A',
-    'text_confirmed'    : '#d42c1f',
-    'text_recovered'    : '#67c94d',
-    'text_active'       : '#f09135',
-    'text_deaths'       : '#ffffff',
-    'coastline'         : '#2a2a28'
-}
 
 PAGE_SIZE = 20
 
@@ -82,7 +71,15 @@ body_confirmed_cases = \
                         'font-weight': 'bold',
                          }
                         ]
+                ),
+            html.Div([    
+                html.Div(
+                dcc.Dropdown(
+                    id='selectDummyLeft',
+                    options=[{'label': c, 'value': c} for c in [1]],
                 )
+                ,className="invisible"),              
+            ])
         ])
 card_confirmed_cases =Card(header="Confirmed Cases", title= "", text="Text", body=body_confirmed_cases)
 
@@ -116,11 +113,12 @@ body_map = \
             html.Div([    
             html.Div(
                 dcc.Dropdown(
-                    id='selectCountry',
-                    options=[{'label': c, 'value': c} for c in countries],
+                    id='selectDummyMiddleMap',
+                    options=[{'label': c, 'value': c} for c in [1]],
                 )
                 ,className="invisible"),              
-            ]), 
+            ])
+             
     ])  
 
 body_table = \
@@ -160,20 +158,60 @@ body_table = \
                         'font-weight': 'bold',
                          }
                         ]
+                ),
+            html.Div([    
+                html.Div(
+                dcc.Dropdown(
+                    id='selectDummyMainTable',
+                    options=[{'label': c, 'value': c} for c in [1]],
                 )
+                ,className="invisible"),              
+            ])
         ])
 
 body_graph = \
     html.Div([
-    dcc.Graph(id='main-graph'),
-    ], className=""
+            html.Div([    
+            html.Div(
+                dcc.Dropdown(
+                    id='selectCountry',
+                    options=[{'label': c, 'value': c} for c in countries],
+                    style={'background-color':colors.get('background', 'black'), 'color': colors.get('text_dropdown', 'grey')}
+                )
+                ,className="visible"),              
+            ]),
+            dcc.Graph(id='main-graph' , config={'displayModeBar': False}, 
+            figure={
+                    'layout':go.Layout(
+                        template = 'plotly_dark',
+
+                        height=700,
+
+                        annotations=[
+                                    go.layout.Annotation(
+                                        text='Please wait....',
+                                        align='center',
+                                        showarrow=False,
+                                        xref='paper',
+                                        yref='paper',
+                                        x=0.5,
+                                        y=0.5,
+                                        bordercolor='black',
+                                        borderwidth=0
+                                    )
+                                ]
+
+                )
+                }
+            )
+        ], className=""
     )
 
 tabcards_main = \
     [ 
         {"tab_label": "Map"         , "tab_body": body_map},
-        {"tab_label": "Table"       , "tab_body": body_table}
-        # {"tab_label": "Graph"       , "tab_body": body_graph}
+        {"tab_label": "Table"       , "tab_body": body_table},
+        {"tab_label": "Graph"       , "tab_body": body_graph}
     ]
 
 card_main =TabCard(name="CardMain",  tabcards=tabcards_main)
