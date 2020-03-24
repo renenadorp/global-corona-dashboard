@@ -1,14 +1,19 @@
 from datetime import datetime as dt
-
 import pandas as pd
+
+#Dash
 from dash.dependencies import Input
 from dash.dependencies import Output
-from app.dashapp1.data.data  import Data
 import dash_table as dtb
+
+#Plotly
 import plotly.express as px
 import plotly.io as pio
 import plotly.graph_objects as go
 
+#App
+from app.dashapp1.data.data  import Data
+from app.dashapp1.colors import colors
 
 
 def register_callbacks(dashapp):
@@ -19,9 +24,9 @@ def register_callbacks(dashapp):
             Output('main-map', 'figure')
         ,
         [
-            Input('selectCountry', 'value')
+            Input('selectDummyMiddleMap', 'value')
          ])
-    def update_map( selectCountry="Netherlands"):
+    def update_map( selectDummyMiddleMap=1):
         t_0 = dt.now()
         d = Data()
         df = d.get_data_confirmed()
@@ -29,21 +34,24 @@ def register_callbacks(dashapp):
         colours=['#91221A']
         hover_data=['Count']
  
-        fig = px.scatter_geo(df, lat="Lat", lon="Long", color_discrete_sequence=colours,
+        fig = px.scatter_geo(df, 
+                            lat="Lat", 
+                            lon="Long", 
+                            color_discrete_sequence=colours,
                             hover_name="Country", 
                             hover_data=hover_data,
                             size="Count",
                             animation_frame="DateSort",
                             opacity=0.7,
-                            size_max=100,
-                            projection=selectCountry) #'https://plot.ly/python-api-reference/generated/plotly.express.scatter_geo.html
+                            size_max=100, #Max size for bubble. Other bubble sizes are derived from this
+                            projection="equirectangular") #'https://plot.ly/python-api-reference/generated/plotly.express.scatter_geo.html
         fig.update_geos(
-            resolution=50,
-            showcoastlines=True, coastlinecolor="#9c9c9b",
-            showland=True, landcolor="#2a2a28",
-            showocean=True, oceancolor="#030f19",
-            showlakes=False, lakecolor="Blue",
-            showrivers=False, rivercolor="Blue"
+            resolution=110, #50 or 110
+            showcoastlines=True,    coastlinecolor=colors.get('coastline','white'),
+            showland=True,          landcolor=colors.get('land', 'black'),
+            showocean=True,         oceancolor=colors.get('ocean','blue'),
+            showlakes=False,        lakecolor=colors.get('lake','blue'),
+            showrivers=False,       rivercolor=colors.get('river','blue'),
         
         )
         fig.update_layout(showlegend=False,  height=700, template='plotly_dark')
@@ -68,7 +76,7 @@ def register_callbacks(dashapp):
     def update_main_table(page_current, page_size):
         d   = Data()
         dfs=d.get_data_combined()
-        dfs=dfs.sort_values(by=['CountConfirmed'], ascending=False).reset_index()
+        dfs=dfs.sort_values(by=['CountConfirmed'], ascending=False)
         
         columns = [{'name': i, 'id': i, 'deletable': True} for i in dfs.columns ]
         
@@ -117,7 +125,7 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-    def update_total_confirmed_cases( selectCountry="Netherlands"):
+    def update_total_confirmed_cases( selectCountry="Italy"):
         t_0 = dt.now()
         
         d   = Data()
@@ -140,7 +148,7 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-    def update_total_deaths( selectCountry="equirectangular"):
+    def update_total_deaths( selectCountry="Italy"):
         t_0 = dt.now()
         
         d   = Data()
@@ -163,7 +171,7 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-    def update_total_recovered( selectCountry="Netherlands"):
+    def update_total_recovered( selectCountry="Italy"):
         t_0 = dt.now()
         
         d   = Data()
@@ -186,20 +194,54 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-    def update_main_graph(selectCountry="Netherlands"):
+    def update_main_graph(selectCountry="Italy"):
+        if selectCountry==None: selectCountry="Italy"
         t_0 = dt.now()
         
         d   = Data()
         df  = d.get_data_combined(most_recent_only=False)
-        print(df.columns)
+    
         t_1 = dt.now()
 
         print('Elapsed time: ' , t_1 - t_0)
-        figure= go.Scatter(
-            x=df['Date'],
-            y=df['CountConfirmed'],
-            text='CountConfirmed'
+        fig = go.Figure()
+        scatter_confirmed=go.Scatter(
+            x=df[(df['Country']==selectCountry)]['Date'],
+            y=df[(df['Country']==selectCountry)]['CountConfirmed'],
+            name='CountConfirmed',
+            line=dict(color=colors.get('marker_confirmed'), width=1),
+            mode='lines',
+            text='CountConfirmed',
+            connectgaps=True
             )
-        return figure
+        
+        scatter_deaths=go.Scatter(
+            x=df[(df['Country']==selectCountry)]['Date'],
+            y=df[(df['Country']==selectCountry)]['CountDeaths'],
+            name='CountDeaths',
+            line=dict(color=colors.get('marker_deaths'), width=1),
+            mode='lines',
+            text='CountDeaths',
+            connectgaps=True,
+            )
+        
+        scatter_recovered=go.Scatter(
+            x=df[(df['Country']==selectCountry)]['Date'],
+            y=df[(df['Country']==selectCountry)]['CountRecovered'],
+            name='CountRecovered',
+            line=dict(color=colors.get('marker_recovered'), width=1),
+            mode='lines',
+            text='CountRecovered',
+            connectgaps=True
+            )
+        
+        fig.add_trace(scatter_confirmed)
+        fig.add_trace(scatter_deaths)
+        fig.add_trace(scatter_recovered)
+        fig.update_layout(title=selectCountry, showlegend=True,  height=700, template='plotly_dark')
+
+
+
+        return fig
 
     
