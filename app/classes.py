@@ -15,15 +15,15 @@ class Nav(object):
             dbc.DropdownMenu(
                 children=[
                     dbc.DropdownMenuItem("Dataset",      href="https://github.com/CSSEGISandData/COVID-19",external_link=True,),
-                    dbc.DropdownMenuItem("CSSE",         href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",external_link=True,),
-                    dbc.DropdownMenuItem("Healthmap"   , href="https://www.healthmap.org/covid-19/",external_link=True,),   
+                    dbc.DropdownMenuItem("Dashboard - CSSE",         href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",external_link=True,),
+                    dbc.DropdownMenuItem("Dashboard - Healthmap"   , href="https://www.healthmap.org/covid-19/",external_link=True,),   
                     ],
                 nav=True,
                 in_navbar=True,
                 label="Other Corona Dashboards",
             ),           
             ],
-    brand="Global Corona Dashboard",
+    brand="Menu",
     brand_href="/",
     brand_external_link=True,
     color="dark",
