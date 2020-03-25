@@ -14,8 +14,9 @@ class Nav(object):
         children=[
             dbc.DropdownMenu(
                 children=[
+                    dbc.DropdownMenuItem("Dataset",      href="https://github.com/CSSEGISandData/COVID-19",external_link=True,),
                     dbc.DropdownMenuItem("CSSE",         href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",external_link=True,),
-                    dbc.DropdownMenuItem("Healthmap"   , href="https://www.healthmap.org/covid-19/",external_link=True,),                
+                    dbc.DropdownMenuItem("Healthmap"   , href="https://www.healthmap.org/covid-19/",external_link=True,),   
                     ],
                 nav=True,
                 in_navbar=True,

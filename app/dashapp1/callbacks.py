@@ -15,6 +15,8 @@ import plotly.graph_objects as go
 from app.dashapp1.data.data  import Data
 from app.dashapp1.colors import colors
 
+### DEFAULST / CONSTANTS
+DEFAULT_COUNTRY="Netherlands"
 
 def register_callbacks(dashapp):
 
@@ -125,7 +127,7 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-    def update_total_confirmed_cases( selectCountry="Italy"):
+    def update_total_confirmed_cases( selectCountry=DEFAULT_COUNTRY):
         t_0 = dt.now()
         
         d   = Data()
@@ -148,7 +150,7 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-    def update_total_deaths( selectCountry="Italy"):
+    def update_total_deaths( selectCountry=DEFAULT_COUNTRY):
         t_0 = dt.now()
         
         d   = Data()
@@ -171,7 +173,7 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-    def update_total_recovered( selectCountry="Italy"):
+    def update_total_recovered( selectCountry=DEFAULT_COUNTRY):
         t_0 = dt.now()
         
         d   = Data()
@@ -194,8 +196,8 @@ def register_callbacks(dashapp):
         [
             Input('selectCountry', 'value')
          ])
-    def update_main_graph(selectCountry="Italy"):
-        if selectCountry==None: selectCountry="Italy"
+    def update_main_graph(selectCountry=DEFAULT_COUNTRY):
+        if selectCountry==None: selectCountry=DEFAULT_COUNTRY
         t_0 = dt.now()
         
         d   = Data()
@@ -225,19 +227,19 @@ def register_callbacks(dashapp):
             connectgaps=True,
             )
         
-        scatter_recovered=go.Scatter(
-            x=df[(df['Country']==selectCountry)]['Date'],
-            y=df[(df['Country']==selectCountry)]['CountRecovered'],
-            name='CountRecovered',
-            line=dict(color=colors.get('marker_recovered'), width=3),
-            mode='lines',
-            text='CountRecovered',
-            connectgaps=True
-            )
+        # scatter_recovered=go.Scatter(
+        #     x=df[(df['Country']==selectCountry)]['Date'],
+        #     y=df[(df['Country']==selectCountry)]['CountRecovered'],
+        #     name='CountRecovered',
+        #     line=dict(color=colors.get('marker_recovered'), width=3),
+        #     mode='lines',
+        #     text='CountRecovered',
+        #     connectgaps=True
+        #     )
         
         fig.add_trace(scatter_confirmed)
         fig.add_trace(scatter_deaths)
-        fig.add_trace(scatter_recovered)
+        #fig.add_trace(scatter_recovered)
         fig.update_layout(title=selectCountry, showlegend=True,  height=700, template='plotly_dark')
 
 
