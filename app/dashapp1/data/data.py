@@ -3,12 +3,11 @@ import datetime as dt
 
 import pandas as pd
 
-DATASETS = os.path.abspath(os.path.dirname(__file__))
 
 class Data(object):
     def get_data_confirmed(self):
        
-        df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv')
+        df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
         dates = [c for c in df.columns if '20' in c]
         df_pivot=pd.melt(df, id_vars=['Province/State', 'Country/Region', 'Lat', 'Long'], value_vars=dates)
         df_pivot.rename(columns={"variable": "Date", "value": "CountConfirmed", "Country/Region":"Country", "Province/State":"State"}, inplace=True)
@@ -22,7 +21,7 @@ class Data(object):
 
     def get_data_deaths(self):
        
-        df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv')
+        df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
         dates = [c for c in df.columns if '20' in c]
         df_pivot=pd.melt(df, id_vars=['Province/State', 'Country/Region', 'Lat', 'Long'], value_vars=dates)
         df_pivot.rename(columns={"variable": "Date", "value": "CountDeaths", "Country/Region":"Country", "Province/State":"State"}, inplace=True)
@@ -51,7 +50,7 @@ class Data(object):
     def get_data_combined(self, most_recent_only=True):
         df_confirmed  = self.get_data_confirmed()[['Country', 'State', 'Date', 'CountConfirmed']]
         df_deaths     = self.get_data_deaths()[['Country', 'State', 'Date', 'CountDeaths']]
-        df_recovered  = self.get_data_recovered()[['Country', 'State', 'Date', 'CountRecovered']]
+        #df_recovered  = self.get_data_recovered()[['Country', 'State', 'Date', 'CountRecovered']]
 
         if most_recent_only:
             
@@ -60,18 +59,20 @@ class Data(object):
             #Select most recent date
             df_confirmed = df_confirmed[df_confirmed.Date==max_date_confirmed]
             df_deaths    = df_deaths[df_deaths.Date==max_date_confirmed]
-            df_recovered = df_recovered[df_recovered.Date==max_date_confirmed]
+            #df_recovered = df_recovered[df_recovered.Date==max_date_confirmed]
 
         #Concatenate datasets: confirmed, deaths, recovered
         dfc= pd.concat([df_confirmed.set_index(['Date','Country','State'], inplace=False), 
                         df_deaths.set_index(['Date','Country','State'], inplace=False), 
-                        df_recovered.set_index(['Date','Country','State'], inplace=False)], 
+                        #df_recovered.set_index(['Date','Country','State'], inplace=False)
+                        ], 
                         axis=1)
         dfc = dfc.groupby(['Date','Country']).sum()
+        dfc['MortalityRate']= (((dfc['CountDeaths']/dfc['CountConfirmed'])*100)).round(3)
 
-        return dfc.reset_index().dropna()
+        return dfc.reset_index().fillna(0)
 
     def get_countries(self):   
-        df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv')
+        df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
         countries=sorted(df['Country/Region'].unique())
         return countries
