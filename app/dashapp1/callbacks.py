@@ -15,8 +15,10 @@ import plotly.graph_objects as go
 from app.dashapp1.data.data  import Data
 from app.dashapp1.colors import colors
 
-### DEFAULST / CONSTANTS
+### DEFAULTS / CONSTANTS
 DEFAULT_COUNTRY="Netherlands"
+DEFAULT_GRAPH_HEIGHT=400
+DEFAULT_MAP_HEIGHT=700
 
 def register_callbacks(dashapp):
 
@@ -56,7 +58,7 @@ def register_callbacks(dashapp):
             showrivers=False,       rivercolor=colors.get('river','blue'),
         
         )
-        fig.update_layout(showlegend=False,  height=700, template='plotly_dark')
+        fig.update_layout(showlegend=False,  height=DEFAULT_MAP_HEIGHT, template='plotly_dark')
 
         t_1 = dt.now()
 
@@ -182,7 +184,7 @@ def register_callbacks(dashapp):
 
         return total_cases
 
-    ### MAIN GRAPH
+    ### MAIN GRAPH - CUMULATIVES
     @dashapp.callback(
         
             Output('main-graph', 'figure')
@@ -234,7 +236,55 @@ def register_callbacks(dashapp):
         fig.add_trace(scatter_confirmed)
         fig.add_trace(scatter_deaths)
         #fig.add_trace(scatter_recovered)
-        fig.update_layout(title=selectCountry, showlegend=True,  height=700, template='plotly_dark')
+        fig.update_layout(title=selectCountry+' - Cumulatives', showlegend=True,  height=DEFAULT_GRAPH_HEIGHT, template='plotly_dark')
+
+
+
+        return fig
+
+  ### MAIN GRAPH - DAILY COUNTS
+    @dashapp.callback(
+        
+            Output('main-graph-increase', 'figure')
+        ,
+        [
+            Input('selectCountry', 'value')
+         ])
+    def update_main_graph_increase(selectCountry=DEFAULT_COUNTRY):
+        if selectCountry==None: selectCountry=DEFAULT_COUNTRY
+        t_0 = dt.now()
+        
+        d   = Data()
+        df  = d.get_data_combined(most_recent_only=False)
+    
+        t_1 = dt.now()
+
+        print('Elapsed time: ' , t_1 - t_0)
+        fig = go.Figure()
+        scatter_confirmed=go.Scatter(
+            x=df[(df['Country']==selectCountry)]['Date'],
+            y=df[(df['Country']==selectCountry)]['CountConfirmedIncrease'],
+            name='CountConfirmed',
+            line=dict(color=colors.get('marker_confirmed'), width=3),
+            mode='lines',
+            text='CountConfirmed',
+            connectgaps=True
+            )
+        
+        scatter_deaths=go.Scatter(
+            x=df[(df['Country']==selectCountry)]['Date'],
+            y=df[(df['Country']==selectCountry)]['CountDeathsIncrease'],
+            name='CountDeaths',
+            line=dict(color=colors.get('marker_deaths'), width=3),
+            mode='lines',
+            text='CountDeaths',
+            connectgaps=True,
+            )
+       
+        fig.add_trace(scatter_confirmed)
+        fig.add_trace(scatter_deaths)
+        #fig.add_trace(scatter_recovered)
+        fig.update_layout(title=selectCountry+' - Daily Counts', showlegend=True,  height=DEFAULT_GRAPH_HEIGHT, template='plotly_dark')
 
 
 
