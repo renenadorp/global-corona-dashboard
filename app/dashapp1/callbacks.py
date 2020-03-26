@@ -166,13 +166,7 @@ def register_callbacks(dashapp):
         return total_cases
 
     ### TOTAL RECOVERED
-    @dashapp.callback(
-        
-            Output('total-recovered', 'children')
-        ,
-        [
-            Input('selectCountry', 'value')
-         ])
+    #@dashapp.callback(            Output('total-recovered', 'children'),[Input('selectCountry', 'value')])
     def update_total_recovered( selectCountry=DEFAULT_COUNTRY):
         t_0 = dt.now()
         
