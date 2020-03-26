@@ -1,3 +1,4 @@
+
 import os
 import datetime as dt
 
@@ -16,8 +17,11 @@ class Data(object):
         df_pivot['DateSort'] = df_pivot['Date']
         df_pivot['Date'] = pd.to_datetime(df_pivot[['Year', 'Month' , 'Day']])
         df_pivot['Count'] = df_pivot["CountConfirmed"]
+        df_pivot['CountConfirmedPrevious'] = (df_pivot.sort_values(by=['Country', 'State', 'Date'], ascending=True)
+                       .groupby(['Country', 'State'])['CountConfirmed'].shift(1))
+        df_pivot['CountConfirmedIncrease'] = df_pivot['CountConfirmed']-df_pivot['CountConfirmedPrevious']
 
-        return df_pivot.fillna(0)
+        return df_pivot.reset_index().fillna(0)[df_pivot['Count']>=0]
 
     def get_data_deaths(self):
        
@@ -30,8 +34,10 @@ class Data(object):
         df_pivot['DateSort'] = df_pivot['Date']
         df_pivot['Date'] = pd.to_datetime(df_pivot[['Year', 'Month' , 'Day']])
         df_pivot['Count'] = df_pivot["CountDeaths"]
-
-        return df_pivot.fillna(0)
+        df_pivot['CountDeathsPrevious'] = (df_pivot.sort_values(by=['Country', 'State', 'Date'], ascending=True)
+                       .groupby(['Country', 'State'])['CountDeaths'].shift(1))
+        df_pivot['CountDeathsIncrease'] = df_pivot['CountDeaths']-df_pivot['CountDeathsPrevious']
+        return df_pivot.reset_index().fillna(0)[df_pivot['Count']>=0]
 
     def get_data_recovered(self):
        
@@ -44,8 +50,7 @@ class Data(object):
         df_pivot['DateSort'] = df_pivot['Date']
         df_pivot['Date'] = pd.to_datetime(df_pivot[['Year', 'Month' , 'Day']])
         df_pivot['Count'] = df_pivot["CountRecovered"]
-
-        return df_pivot.fillna(0)
+        return df_pivot.fillna(0)[df_pivot['Count']>=0]
 
     def get_data_combined(self, most_recent_only=True):
         df_confirmed  = self.get_data_confirmed()[['Country', 'State', 'Date', 'CountConfirmed']]

@@ -269,7 +269,7 @@ layout = html.Div([
                 html.Div([
                 card_total_confirmed_cases.html,
                 card_total_deaths.html,
-                card_total_recovered.html,
+                #card_total_recovered.html,
                 ], className="col"),        
                 
             ]
