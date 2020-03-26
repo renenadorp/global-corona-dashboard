@@ -203,6 +203,30 @@ body_graph = \
 
                 )
                 }
+            ),
+            dcc.Graph(id='main-graph-increase' , config={'displayModeBar': False}, 
+            figure={
+                    'layout':go.Layout(
+                        template = 'plotly_dark',
+
+                        height=700,
+
+                        annotations=[
+                                    go.layout.Annotation(
+                                        text='Please wait....',
+                                        align='center',
+                                        showarrow=False,
+                                        xref='paper',
+                                        yref='paper',
+                                        x=0.5,
+                                        y=0.5,
+                                        bordercolor='black',
+                                        borderwidth=0
+                                    )
+                                ]
+
+                )
+                }
             )
         ], className=""
     )

@@ -53,8 +53,8 @@ class Data(object):
         return df_pivot.fillna(0)[df_pivot['Count']>=0]
 
     def get_data_combined(self, most_recent_only=True):
-        df_confirmed  = self.get_data_confirmed()[['Country', 'State', 'Date', 'CountConfirmed']]
-        df_deaths     = self.get_data_deaths()[['Country', 'State', 'Date', 'CountDeaths']]
+        df_confirmed  = self.get_data_confirmed()[['Country', 'State', 'Date', 'CountConfirmed', 'CountConfirmedIncrease']]
+        df_deaths     = self.get_data_deaths()[['Country', 'State', 'Date', 'CountDeaths', 'CountDeathsIncrease']]
         #df_recovered  = self.get_data_recovered()[['Country', 'State', 'Date', 'CountRecovered']]
 
         if most_recent_only:
