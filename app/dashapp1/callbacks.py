@@ -20,12 +20,18 @@ DEFAULT_COUNTRY="Netherlands"
 DEFAULT_GRAPH_HEIGHT=400
 DEFAULT_MAP_HEIGHT=700
 
+def format_date(d):
+    return d.strftime("%B %d,  %Y")
+
+
 def register_callbacks(dashapp):
 
     ### MAIN MAP
     @dashapp.callback(
-        
-            Output('main-map', 'figure')
+        [
+            Output('main-map', 'figure'),
+            Output('footer-map', 'children')
+        ]
         ,
         [
             Input('selectDummyMiddleMap', 'value')
@@ -34,7 +40,7 @@ def register_callbacks(dashapp):
         t_0 = dt.now()
         d = Data()
         df = d.get_data_confirmed()
-
+        max_date = df['Date'].max()
         colours=['#91221A']
         hover_data=['Count']
  
@@ -64,13 +70,14 @@ def register_callbacks(dashapp):
 
         print('Elapsed time: ' , t_1 - t_0)
 
-        return fig
+        return fig, "Data updated until " + format_date(max_date)
 
     ### MAIN TABLE
     @dashapp.callback(
         [
             Output('main-table', 'columns'),
-            Output('main-table', 'data')
+            Output('main-table', 'data'),
+            Output('footer-table', 'children')
         ],
         [
             Input('main-table', "page_current"),
@@ -79,15 +86,16 @@ def register_callbacks(dashapp):
          ])
     def update_main_table(page_current, page_size):
         d   = Data()
-        dfs=d.get_data_combined()
+        dfs=d.get_data_combined()["df"]
         dfs=dfs.sort_values(by=['CountConfirmed'], ascending=False)
-        
+        max_date = dfs['Date'].max()
+
         columns = [{'name': i, 'id': i, 'deletable': True} for i in dfs.columns ]
         
         data = dfs.iloc[page_current*page_size:(page_current+ 1)*page_size].to_dict('records')
 
 
-        return columns, data
+        return columns, data, "Data updated until " + format_date(max_date)
 
     ### CONFIRMED BY COUNTRY
     @dashapp.callback(
@@ -186,8 +194,10 @@ def register_callbacks(dashapp):
 
     ### MAIN GRAPH - CUMULATIVES
     @dashapp.callback(
-        
-            Output('main-graph', 'figure')
+        [
+            Output('main-graph', 'figure'),
+            Output('footer-graph', 'children')
+        ]
         ,
         [
             Input('selectCountry', 'value')
@@ -197,8 +207,9 @@ def register_callbacks(dashapp):
         t_0 = dt.now()
         
         d   = Data()
-        df  = d.get_data_combined(most_recent_only=False)
-    
+        df  = d.get_data_combined(most_recent_only=False)["df"]
+        max_date = df['Date'].max()
+
         t_1 = dt.now()
 
         print('Elapsed time: ' , t_1 - t_0)
@@ -240,8 +251,7 @@ def register_callbacks(dashapp):
 
 
 
-        return fig
-
+        return fig, "Data updated until " + format_date(max_date)
   ### MAIN GRAPH - DAILY COUNTS
     @dashapp.callback(
         
@@ -255,7 +265,7 @@ def register_callbacks(dashapp):
         t_0 = dt.now()
         
         d   = Data()
-        df  = d.get_data_combined(most_recent_only=False)
+        df  = d.get_data_combined(most_recent_only=False)["df"]
     
         t_1 = dt.now()
 
