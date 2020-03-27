@@ -19,7 +19,7 @@ countries=d.get_countries()
 ### NAVBAR ###################################################
 nav = Nav().html
 
-### TOTAL CASES BY COUNTRY #################################
+### RIGHT - TOTAL CASES #################################
 body_total_confirmed_cases = \
        html.Div(
                 [
@@ -33,7 +33,35 @@ body_total_confirmed_cases = \
                 ]         )
 card_total_confirmed_cases =Card(header="Total Confirmed Cases", title= "", text="Text", body=body_total_confirmed_cases)
 
-### CONFIRMED CASES BY COUNTRY #################################
+### RIGHT - TOTAL DEATHS #############################################
+body_total_deaths = \
+       html.Div(
+                [
+                    html.H1('..',
+                        id="total-deaths",
+                        style={
+                            'textAlign': 'center',
+                            'color': colors['text_deaths']
+                        }
+                    )
+                ]         )
+card_total_deaths =Card(header="Total Deaths", title= "", text="Text", body=body_total_deaths)
+
+## RIGHT - TOTAL RECOVERED #############################################
+body_total_recovered = \
+       html.Div(
+                [
+                    html.H1('..',
+                        id="total-recovered",
+                        style={
+                            'textAlign': 'center',
+                            'color': colors['text_recovered']
+                        }
+                    )
+                ]         )
+card_total_recovered =Card(header="Total Recovered", title= "", text="Text", body=body_total_recovered)
+
+### LEFT - CONFIRMED CASES BY COUNTRY #################################
 body_confirmed_cases = \
     html.Div([
             dtb.DataTable(
@@ -83,7 +111,7 @@ body_confirmed_cases = \
         ])
 card_confirmed_cases =Card(header="Confirmed Cases", title= "", text="Text", body=body_confirmed_cases)
 
-### MAP ################################################
+### MAIN - MAP ################################################
 body_map = \
     html.Div([
             html.Div(dcc.Graph(id='main-map' , config={'displayModeBar': False}, 
@@ -110,17 +138,19 @@ body_map = \
                 )
                 }
             )),  
-            html.Div([    
-            html.Div(
-                dcc.Dropdown(
-                    id='selectDummyMiddleMap',
-                    options=[{'label': c, 'value': c} for c in [1]],
-                )
-                ,className="invisible"),              
+            html.Div([ 
+                html.P(id="footer-map", style={"font-style": "italic"})   ,
+                html.Div(
+                    dcc.Dropdown(
+                        id='selectDummyMiddleMap',
+                        options=[{'label': c, 'value': c} for c in [1]],
+                    )
+                    ,className="invisible"),              
             ])
              
     ])  
 
+### MAIN - TABLE ################################################
 body_table = \
     html.Div([
             dtb.DataTable(
@@ -159,7 +189,8 @@ body_table = \
                          }
                         ]
                 ),
-            html.Div([    
+            html.Div([   
+                html.P(id="footer-table", style={"font-style": "italic"})   ,
                 html.Div(
                 dcc.Dropdown(
                     id='selectDummyMainTable',
@@ -169,6 +200,7 @@ body_table = \
             ])
         ])
 
+### MAIN - GRAPH ################################################
 body_graph = \
     html.Div([
             html.Div([    
@@ -227,47 +259,20 @@ body_graph = \
 
                 )
                 }
-            )
+            ),
+            html.P(id="footer-graph", style={"font-style": "italic"})   ,
+
         ], className=""
     )
 
+### MIDDLE - CARDS ################################################
 tabcards_main = \
     [ 
         {"tab_label": "Map"         , "tab_body": body_map},
         {"tab_label": "Table"       , "tab_body": body_table},
         {"tab_label": "Graph"       , "tab_body": body_graph}
     ]
-
 card_main =TabCard(name="CardMain",  tabcards=tabcards_main)
-
-### TOTAL DEATHS #############################################
-body_total_deaths = \
-       html.Div(
-                [
-                    html.H1('..',
-                        id="total-deaths",
-                        style={
-                            'textAlign': 'center',
-                            'color': colors['text_deaths']
-                        }
-                    )
-                ]         )
-card_total_deaths =Card(header="Total Deaths", title= "", text="Text", body=body_total_deaths)
-
-
-## TOTAL RECOVERED #############################################
-body_total_recovered = \
-       html.Div(
-                [
-                    html.H1('..',
-                        id="total-recovered",
-                        style={
-                            'textAlign': 'center',
-                            'color': colors['text_recovered']
-                        }
-                    )
-                ]         )
-card_total_recovered =Card(header="Total Recovered", title= "", text="Text", body=body_total_recovered)
 
 ### PAGE LAYOUT #############################################
 layout = html.Div([

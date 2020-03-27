@@ -63,7 +63,7 @@ class Data(object):
         df_confirmed  = self.get_data_confirmed()[['Country', 'State', 'Date', 'CountConfirmed', 'CountConfirmedIncrease']]
         df_deaths     = self.get_data_deaths()[['Country', 'State', 'Date', 'CountDeaths', 'CountDeathsIncrease']]
         #df_recovered  = self.get_data_recovered()[['Country', 'State', 'Date', 'CountRecovered']]
-
+        max_date_confirmed=None
         if most_recent_only:
             
             max_date_confirmed=df_confirmed['Date'].max()
@@ -82,7 +82,7 @@ class Data(object):
         dfc = dfc.groupby(['Date','Country']).sum()
         dfc['MortalityRate']= (((dfc['CountDeaths']/dfc['CountConfirmed'])*100)).round(3)
 
-        return dfc.reset_index().fillna(0)
+        return {"df": dfc.reset_index().fillna(0), "max_date":max_date_confirmed}
 
     def get_countries(self):   
         df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
