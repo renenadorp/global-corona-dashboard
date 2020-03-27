@@ -1,9 +1,10 @@
 
 import os
 import datetime as dt
-
+import numpy as np
 import pandas as pd
 
+pd.options.display.max_rows = 99999999
 
 class Data(object):
     def get_data_confirmed(self):
@@ -12,6 +13,8 @@ class Data(object):
         dates = [c for c in df.columns if '20' in c]
         df_pivot=pd.melt(df, id_vars=['Province/State', 'Country/Region', 'Lat', 'Long'], value_vars=dates)
         df_pivot.rename(columns={"variable": "Date", "value": "CountConfirmed", "Country/Region":"Country", "Province/State":"State"}, inplace=True)
+        
+        df_pivot['State'] = np.where(df_pivot['State'].isna(), df_pivot['Country'], df_pivot['State'])
         df_pivot[['Month','Day', 'Year']] =df_pivot.Date.str.split(pat = "/", expand=True)
         df_pivot['Year'] = '20' + df_pivot['Year'].astype(str)
         df_pivot['DateSort'] = df_pivot['Date']
@@ -29,6 +32,8 @@ class Data(object):
         dates = [c for c in df.columns if '20' in c]
         df_pivot=pd.melt(df, id_vars=['Province/State', 'Country/Region', 'Lat', 'Long'], value_vars=dates)
         df_pivot.rename(columns={"variable": "Date", "value": "CountDeaths", "Country/Region":"Country", "Province/State":"State"}, inplace=True)
+        df_pivot['State'] = np.where(df_pivot['State'].isna(), df_pivot['Country'], df_pivot['State'])
+
         df_pivot[['Month','Day', 'Year']] =df_pivot.Date.str.split(pat = "/", expand=True)
         df_pivot['Year'] = '20' + df_pivot['Year'].astype(str)
         df_pivot['DateSort'] = df_pivot['Date']
@@ -45,6 +50,8 @@ class Data(object):
         dates = [c for c in df.columns if '20' in c]
         df_pivot=pd.melt(df, id_vars=['Province/State', 'Country/Region', 'Lat', 'Long'], value_vars=dates)
         df_pivot.rename(columns={"variable": "Date", "value": "CountRecovered", "Country/Region":"Country", "Province/State":"State"}, inplace=True)
+        df_pivot['State'] = np.where(df_pivot['State'].isna(), df_pivot['Country'], df_pivot['State'])
+
         df_pivot[['Month','Day', 'Year']] =df_pivot.Date.str.split(pat = "/", expand=True)
         df_pivot['Year'] = '20' + df_pivot['Year'].astype(str)
         df_pivot['DateSort'] = df_pivot['Date']
