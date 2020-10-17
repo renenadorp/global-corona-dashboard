@@ -17,6 +17,11 @@ class Nav(object):
                     dbc.DropdownMenuItem("Dataset",      href="https://github.com/CSSEGISandData/COVID-19",external_link=True,),
                     dbc.DropdownMenuItem("Dashboard - CSSE",         href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",external_link=True,),
                     dbc.DropdownMenuItem("Dashboard - Healthmap"   , href="https://www.healthmap.org/covid-19/",external_link=True,),   
+                    dbc.DropdownMenuItem("Dashboard - PowerBI Community COVID-19 Dashboard"   , href="https://community.powerbi.com/t5/COVID-19-Data-Stories-Gallery/COVID-19-Dashboard-From-Data-to-Insights/td-p/995011",external_link=True,),   
+                   
+                   
+                   
+                   
                     ],
                 nav=True,
                 in_navbar=True,
